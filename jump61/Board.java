@@ -1,9 +1,3 @@
-// This file contains a SUGGESTION for the structure of your program.  You
-// may change any of it, or add additional files to this directory (package),
-// as long as you conform to the project specification.
-
-// Comments that start with "//" are intended to be removed from your
-// solutions.
 package jump61;
 
 import java.util.Observable;
@@ -17,7 +11,7 @@ import static jump61.Side.*;
  *
  *  The class extends java.util.Observable in case one wants a class (such
  *  as a GUI component) to be notified when the board changes.
- *  @author
+ *  @author Dasheng Chen
  */
 abstract class Board extends Observable {
 
@@ -92,19 +86,31 @@ abstract class Board extends Observable {
      *  to square #N. */
     boolean isLegal(Side player, int n) {
         // REPLACE WITH SOLUTION
+        if (exists(n)) {
+            Side side = this.get(n).getSide();
+            return side.playableSquare(player);
+        }
         return false;
     }
 
     /** Returns true iff PLAYER is allowed to move at this point. */
     boolean isLegal(Side player) {
         // REPLACE WITH SOLUTION
-        return false;
+        Side opposite = player.opposite();
+        Side nextSide = this.whoseMove();
+        return nextSide.playableSquare(opposite);
     }
 
     /** Returns the winner of the current position, if the game is over,
      *  and otherwise null. */
     final Side getWinner() {
         // REPLACE WITH SOLUTION
+        int boardSize = size() * size();
+        if (numOfSide(Side.BLUE) == boardSize) {
+            return Side.BLUE;
+        } else if (numOfSide(Side.RED) == boardSize) {
+            return Side.RED;
+        }
         return null;
     }
 

@@ -1,9 +1,3 @@
-// This file contains a SUGGESTION for the structure of your program.  You
-// may change any of it, or add additional files to this directory (package),
-// as long as you conform to the project specification.
-
-// Comments that start with "//" are intended to be removed from your
-// solutions.
 package jump61;
 
 import java.io.BufferedReader;
@@ -20,7 +14,7 @@ import java.io.Writer;
 import ucb.util.CommandArgs;
 
 /** The jump61 game.
- * @author
+ * @author Dasheng Chen
  */
 public class Main {
 

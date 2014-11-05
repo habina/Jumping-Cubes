@@ -9,7 +9,7 @@ package jump61;
 import ucb.junit.textui;
 
 /** The suite of all JUnit tests for the Jump61 program.
- *  @author
+ *  @author Dasheng Chen
  */
 public class UnitTest {
 

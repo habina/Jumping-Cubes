@@ -10,7 +10,7 @@ import static jump61.Side.*;
 import static jump61.Square.square;
 
 /** A Jump61 board state that may be modified.
- *  @author
+ *  @author Dasheng Chen
  */
 class MutableBoard extends Board {
 

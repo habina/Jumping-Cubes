@@ -9,7 +9,7 @@ package jump61;
 import java.util.ArrayList;
 
 /** An automated Player.
- *  @author
+ *  @author Dasheng Chen
  */
 class AI extends Player {
 
