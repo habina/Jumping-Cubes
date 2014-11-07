@@ -18,7 +18,7 @@ import static jump61.Side.*;
 import static jump61.GameException.error;
 
 /** Main logic for playing (a) game(s) of Jump61.
- *  @author
+ *  @author Dasheng Chen
  */
 class Game extends Observable {
 
@@ -66,6 +66,13 @@ class Game extends Observable {
         _out.flush();
         _board.clear(Defaults.BOARD_SIZE);
         // FIXME
+        String command = "";
+        if (promptForNext()) {
+            command = _inp.next();
+        }
+        command = canonicalizeCommand(command);
+        executeCommand(command);
+        
         _prompter.close();
         _out.close();
         _err.close();
@@ -201,6 +208,7 @@ class Game extends Observable {
      *  immediately print a win message and end the game. */
     private void restartGame() {
         // FIXME
+        System.out.println("start game");
         announce();
     }
 

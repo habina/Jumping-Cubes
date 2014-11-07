@@ -7,7 +7,7 @@
 package jump61;
 
 /** A Player that gets its moves from manual input.
- *  @author
+ *  @author Dasheng Chen
  */
 class HumanPlayer extends Player {
 

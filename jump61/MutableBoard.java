@@ -8,10 +8,7 @@ package jump61;
 
 import static jump61.Square.square;
 
-import java.util.Iterator;
 import java.util.Stack;
-
-import com.sun.org.apache.bcel.internal.generic.CASTORE;
 
 /** A Jump61 board state that may be modified.
  *  @author Dasheng Chen
@@ -21,13 +18,6 @@ class MutableBoard extends Board {
     /** An N x N board in initial configuration. */
     MutableBoard(int N) {
         // FIXME
-//        this._size = N;
-//        this._boardStack = new Stack<MutableBoard>();
-//        this._boardArray = new Square[_size * _size];
-//        for (int i = 0; i < _boardArray.length; i += 1) {
-//            _boardArray[i] = Square.square(Side.WHITE, 1);
-//        }
-//        this._boardStack.push(this);
         this.clear(N);
     }
 
@@ -48,29 +38,26 @@ class MutableBoard extends Board {
         for (int i = 0; i < _boardArray.length; i += 1) {
             _boardArray[i] = Square.square(Side.WHITE, 1);
         }
-//        ConstantBoard constBoard = new ConstantBoard(this);
-//        this._boardStack.push(constBoard);
         announce();
     }
 
     @Override
     void copy(Board board) {
         // FIXME
+        this._balanced = true;
         this._boardStack = new Stack<MutableBoard>();
         this._size = board.size();
         this._boardArray = new Square[_size * _size];
-        for (int i = 0; i < _boardArray.length; i += 1) {
-            Square square = board._boardArray[i];
-            _boardArray[i] = Square.square(square.getSide(), square.getSpots());
-        }
-//        ConstantBoard constBoard = new ConstantBoard(this);
-//        this._boardStack.push(constBoard);
+        this.internalCopy(board);
+//        for (int i = 0; i < _boardArray.length; i += 1) {
+//            Square square = board._boardArray[i];
+//            _boardArray[i] = Square.square(square.getSide(), square.getSpots());
+//        }
     }
 
     /** Copy the contents of BOARD into me, without modifying my undo
      *  history.  Assumes BOARD and I have the same size. */
-    private void internalCopy(MutableBoard board) {
-//        private void internalCopy(MutableBoard board) {
+    private void internalCopy(Board board) {
         // FIXME
         for (int i = 0; i < _boardArray.length; i += 1) {
             Square square = board._boardArray[i];
@@ -187,7 +174,6 @@ class MutableBoard extends Board {
 
     @Override
     void set(int r, int c, int num, Side player) {
-//        internalSet(sqNum(r, c), square(player, num));
         set(sqNum(r, c), num, player);
     }
 
@@ -195,7 +181,6 @@ class MutableBoard extends Board {
     void set(int n, int num, Side player) {
         if (this.isLegal(player, n)) {
             internalSet(n, square(player, num));
-//            announce();
         }
     }
 
@@ -212,9 +197,6 @@ class MutableBoard extends Board {
     private void markUndo() {
         // FIXME
         MutableBoard mBoard = new MutableBoard(this);
-//        Board constBoard = new ConstantBoard(mBoard);
-//        System.out.println("marking:");
-//        System.out.println(mBoard.toString());
         this._boardStack.push(mBoard);
     }
 
@@ -271,11 +253,6 @@ class MutableBoard extends Board {
         for (int i = 0; i < _boardArray.length; i += 1) {
             code += _boardArray[i].hashCode();
         }
-        // Need to consider history stack?
-//        Iterator<MutableBoard> iter = _boardStack.iterator();
-//        while (iter.hasNext()) {
-//            code += iter.next().hashCode();
-//        }
         result = result * prime + code;
         return result;
     }
