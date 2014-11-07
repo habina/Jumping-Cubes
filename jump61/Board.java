@@ -88,7 +88,7 @@ abstract class Board extends Observable {
         // REPLACE WITH SOLUTION
         if (exists(n)) {
             Side side = this.get(n).getSide();
-            return side.playableSquare(player);
+            return player.playableSquare(side);
         }
         return false;
     }
@@ -169,7 +169,14 @@ abstract class Board extends Observable {
     @Override
     public String toString() {
         // REPLACE WITH SOLUTION
-        return "";
+        String output = "";
+        for (int i = 0; i < _boardArray.length; i += 1) {
+            output += _boardArray[i].toString() + " ";
+            if ((i + 1) % _size == 0) {
+                output += "\n";
+            }
+        }
+        return output;
     }
 
     /** Returns an external rendition of me, suitable for
@@ -218,5 +225,8 @@ abstract class Board extends Observable {
     /** The length of an end of line on this system. */
     private static final int NL_LENGTH =
         System.getProperty("line.separator").length();
-
+    /** Board Array. */
+    protected Square[] _boardArray;
+    /** Row size, same as Column. */
+    protected int _size;
 }

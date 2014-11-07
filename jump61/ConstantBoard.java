@@ -13,6 +13,7 @@ class ConstantBoard extends Board {
      *  all operations are delegated to BOARD. */
     ConstantBoard(Board board) {
         _board = board;
+        this._boardArray = _board._boardArray;
     }
 
     @Override
@@ -58,6 +59,12 @@ class ConstantBoard extends Board {
     @Override
     public int hashCode() {
         return _board.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        // REPLACE WITH SOLUTION
+        return _board.toString();
     }
 
     /** The Observer OBS observing this Board is actually observing the

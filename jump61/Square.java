@@ -38,6 +38,12 @@ class Square {
     int getSpots() {
         return _spots;
     }
+    
+    @Override
+    public String toString() {
+        String output = this.getSpots() + "" + this.getSide();
+        return output;
+    }
 
     /* Because there is only one Square with any particular contents, it is not
      * necessary to override .equals and .hashCode; the default implementations
