@@ -1,0 +1,3 @@
+# Ignore "make" generated ".class" files
+jump61/*.class
+jump61/sentinel
