@@ -27,8 +27,9 @@ class Game extends Observable {
 
     /** A list of all commands. */
     private static final String[] COMMAND_NAMES = {
+        "",
         "auto", "clear", "dump", "help", "manual",
-        "quit", "seed", "set", "size", "start",
+        "quit", "seed", "set", "size", "start"
     };
 
     /** A new Game that takes command/move input from INPUT, prints
@@ -42,7 +43,7 @@ class Game extends Observable {
         _readonlyBoard = new ConstantBoard(_board);
         _prompter = new PrintWriter(prompts, true);
         _inp = new Scanner(input);
-        _inp.useDelimiter("(?m)\\p{Blank}*$|^\\p{Blank}*|\\p{Blank}+");
+        _inp.useDelimiter("\\p{Blank}*(?=[\r\n])|(?<=\n)|\\p{Blank}+");
         _out = new PrintWriter(output, true);
         _err = new PrintWriter(errorOutput, true);
     }
@@ -66,13 +67,9 @@ class Game extends Observable {
         _out.flush();
         _board.clear(Defaults.BOARD_SIZE);
         // FIXME
-        String command = "";
         if (promptForNext()) {
-            command = _inp.next();
+            readExecuteCommand();
         }
-        command = canonicalizeCommand(command);
-        executeCommand(command);
-        
         _prompter.close();
         _out.close();
         _err.close();
@@ -105,12 +102,14 @@ class Game extends Observable {
     void makeMove(int r, int c) {
         assert _board.isLegal(_board.whoseMove(), r, c);
         // FIXME
+        _board.addSpot(_board.whoseMove(), r, c);
     }
 
     /** Add a spot to square #N, if legal to do so. */
     void makeMove(int n) {
         assert _board.isLegal(_board.whoseMove(), n);
         // FIXME
+        _board.addSpot(_board.whoseMove(), n);
     }
 
     /** Report a move by PLAYER to ROW COL. */
@@ -134,6 +133,9 @@ class Game extends Observable {
      *  If so, announce and stop play. */
     private void checkForWin() {
         // FIXME
+        if (_board.getWinner() != null) {
+            announceWinner();
+        }
     }
 
     /** Send announcement of winner to my user output. */
@@ -161,12 +163,14 @@ class Game extends Observable {
     /** Set getPlayer(COLOR) to PLAYER. */
     private void setPlayer(Side color, Player player) {
         // FIXME
+        _players[color.ordinal()] = player;
     }
 
     /** Stop any current game and clear the board to its initial
      *  state. */
     void clear() {
         // FIXME
+        _board.clear(_board.size());
     }
 
     /** Print the current board using standard board-dump format. */
@@ -195,21 +199,34 @@ class Game extends Observable {
      *  the number of neighbors of square R, C. */
     private void setSpots(int r, int c, int spots, String color) {
         // FIXME
+        if (spots == 0) {
+            _board.set(r, c, spots, Side.valueOf(color));
+        }
     }
 
     /** Stop any current game and set the board to an empty N x N board
      *  with numMoves() == 0.  Requires 2 <= N <= 10. */
     private void setSize(int n) {
         // FIXME
-        announce();
+        if (n >= 2 && n <= 10) {
+            _board.clear(n);
+            announce();
+        } else {
+            throw error("Requires 2 <= N <= 10.");
+        }
     }
 
     /** Begin accepting moves for game.  If the game is won,
      *  immediately print a win message and end the game. */
     private void restartGame() {
         // FIXME
-        System.out.println("start game");
-        announce();
+        this._playing = true;
+
+        while (promptForNext()) {
+            checkForWin();
+            readExecuteCommand();
+            announce();
+        }
     }
 
     /** Save move R C in _move.  Error if R and C do not indicate an
@@ -232,6 +249,12 @@ class Game extends Observable {
      *  a line, if there is more input. */
     private void readExecuteCommand() {
         // FIXME
+        String command = "";
+//        if (promptForNext()) {
+            String str = _inp.nextLine();
+            command = canonicalizeCommand(str);
+            executeCommand(command);
+//        }
     }
 
     /** Return the full, lower-case command name that uniquely fits
@@ -272,7 +295,7 @@ class Game extends Observable {
         switch (canonicalizeCommand(cmnd)) {
         case "\n": case "\r\n":
             return;
-        case "#":
+        case "#": case "":
             break;
         case "auto":
             setAuto(readSide());
