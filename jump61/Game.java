@@ -27,6 +27,7 @@ class Game extends Observable {
 
     /** A list of all commands. */
     private static final String[] COMMAND_NAMES = {
+        "",
         "auto", "clear", "dump", "help", "manual",
         "quit", "seed", "set", "size", "start",
     };
@@ -269,7 +270,7 @@ class Game extends Observable {
         switch (canonicalizeCommand(cmnd)) {
         case "\n": case "\r\n":
             return;
-        case "#":
+        case "#": case "":
             break;
         case "auto":
             setAuto(readSide());
