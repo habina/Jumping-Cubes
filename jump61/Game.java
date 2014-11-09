@@ -227,9 +227,13 @@ class Game extends Observable {
     /** Read and execute one command.  Leave the input at the start of
      *  a line, if there is more input. */
     private void readExecuteCommand() {
-        String line = _inp.nextLine();
-        String command = canonicalizeCommand(line);
-        executeCommand(command);
+        try {
+            String line = _inp.nextLine();
+            String command = canonicalizeCommand(line);
+            executeCommand(command);
+        } catch (Exception e) {
+            reportError(e.getMessage());
+        }
     }
 
     /** Return the full, lower-case command name that uniquely fits
