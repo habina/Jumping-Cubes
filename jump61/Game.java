@@ -69,6 +69,10 @@ class Game extends Observable {
         // Try read command
         while (promptForNext()) {
             readExecuteCommand();
+
+            if (_exit == 0) {
+                break;
+            }
         }
         _prompter.close();
         _out.close();
