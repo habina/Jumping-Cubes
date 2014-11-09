@@ -65,7 +65,10 @@ class Game extends Observable {
         _out.println("Welcome to " + Defaults.VERSION);
         _out.flush();
         _board.clear(Defaults.BOARD_SIZE);
-        // FIXME
+        // Try read command
+        while (promptForNext()) {
+            readExecuteCommand();
+        }
         _prompter.close();
         _out.close();
         _err.close();
@@ -223,7 +226,9 @@ class Game extends Observable {
     /** Read and execute one command.  Leave the input at the start of
      *  a line, if there is more input. */
     private void readExecuteCommand() {
-        // FIXME
+        String line = _inp.nextLine();
+        String command = canonicalizeCommand(line);
+        executeCommand(command);
     }
 
     /** Return the full, lower-case command name that uniquely fits
