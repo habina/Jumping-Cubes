@@ -42,7 +42,7 @@ class Game extends Observable {
         _readonlyBoard = new ConstantBoard(_board);
         _prompter = new PrintWriter(prompts, true);
         _inp = new Scanner(input);
-        _inp.useDelimiter("(?m)\\p{Blank}*$|^\\p{Blank}*|\\p{Blank}+");
+        _inp.useDelimiter("\\p{Blank}*(?=[\r\n])|(?<=\n)|\\p{Blank}+");
         _out = new PrintWriter(output, true);
         _err = new PrintWriter(errorOutput, true);
     }
