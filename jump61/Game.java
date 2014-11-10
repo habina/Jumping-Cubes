@@ -168,6 +168,9 @@ class Game extends Observable {
      *  state. */
     void clear() {
         // FIXME
+        // stop game
+        _playing = false;
+        _board.clear(Defaults.BOARD_SIZE);
     }
 
     /** Print the current board using standard board-dump format. */
@@ -209,6 +212,8 @@ class Game extends Observable {
      *  immediately print a win message and end the game. */
     private void restartGame() {
         // FIXME
+        clear();
+        _playing = true;
         announce();
     }
 
