@@ -68,19 +68,19 @@ class Game extends Observable {
         _board.clear(Defaults.BOARD_SIZE);
         // FIXME
         int[] move = new int[2];
-        promptForNext();
         while (_exit != 0) {
             if (gameInProgress()) {
                 while (getMove(move)) {
                   int r = move[0];
                   int c = move[1];
-                  makeMove(r, c);
                   reportMove(_board.whoseMove(), r, c);
+                  makeMove(r, c);
                   if (_exit == 0) {
                       break;
                   }
                 }
             } else {
+                promptForNext();
                 readExecuteCommand();
             }
         }
@@ -184,6 +184,9 @@ class Game extends Observable {
      *  state. */
     void clear() {
         // FIXME
+        _playing = false;
+        _move[0] = 0;
+        _move[1] = 0;
         _board.clear(_board.size());
     }
 
