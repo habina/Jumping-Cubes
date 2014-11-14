@@ -72,8 +72,17 @@ class Game extends Observable {
         // FIXME
         while (promptForNext()) {
             readExecuteCommand();
-            if (_verbose) {
-                printBoard();
+            while (gameInProgress()) {
+                Side color = _board.whoseMove();
+                Player player = getPlayer(color);
+                try {
+                    player.makeMove();
+                    if (_verbose) {
+                        printBoard();
+                    }
+                } catch (Exception e) {
+                    reportError(e.getMessage());
+                }
             }
             if (_exit == 0) {
                 break;
@@ -109,16 +118,16 @@ class Game extends Observable {
 
     /** Add a spot to R C, if legal to do so. */
     void makeMove(int r, int c) {
-        assert _board.isLegal(_board.whoseMove(), r, c);
-        // FIXME
-        _board.addSpot(_board.whoseMove(), r, c);
+        if ( _board.isLegal(_board.whoseMove(), r, c)) {
+            _board.addSpot(_board.whoseMove(), r, c);
+        } else {
+            throw error("invalid move: %d %d", r, c);
+        }
     }
 
     /** Add a spot to square #N, if legal to do so. */
     void makeMove(int n) {
-        assert _board.isLegal(_board.whoseMove(), n);
-        // FIXME
-        _board.addSpot(_board.whoseMove(), n);
+        _board.addSpot(_board.whoseMove(), _board.row(n), _board.col(n));
     }
 
     /** Report a move by PLAYER to ROW COL. */
