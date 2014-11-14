@@ -169,13 +169,15 @@ abstract class Board extends Observable {
     @Override
     public String toString() {
         // REPLACE WITH SOLUTION
-        String output = "";
+        String output = "===\n";
         for (int i = 0; i < _boardArray.length; i += 1) {
-            output += _boardArray[i].toString() + " ";
             if ((i + 1) % _size == 0) {
-                output += "\n";
+                output += _boardArray[i].toString() + "\n";
+            } else {
+                output += _boardArray[i].toString() + " ";
             }
         }
+        output += "===";
         return output;
     }
 

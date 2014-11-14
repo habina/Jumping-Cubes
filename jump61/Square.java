@@ -41,7 +41,12 @@ class Square {
     
     @Override
     public String toString() {
-        String output = this.getSpots() + "" + this.getSide();
+        Side side = getSide();
+        char letter = '-';
+        if (!side.toString().equals("white")) {
+            letter = side.toString().charAt(0);
+        }
+        String output = this.getSpots() + "" + letter;
         return output;
     }
 

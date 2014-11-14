@@ -19,6 +19,20 @@ public class BoardTest {
     private static final String NL = System.getProperty("line.separator");
 
     @Test
+    public void testToString() {
+        Board B = new MutableBoard(6);
+        String output = "===\n";
+        output += "1- 1- 1- 1- 1- 1-\n";
+        output += "1- 1- 1- 1- 1- 1-\n";
+        output += "1- 1- 1- 1- 1- 1-\n";
+        output += "1- 1- 1- 1- 1- 1-\n";
+        output += "1- 1- 1- 1- 1- 1-\n";
+        output += "1- 1- 1- 1- 1- 1-\n";
+        output += "===";
+        assertEquals(output, B.toString());
+    }
+    
+    @Test
     public void testSize() {
         Board B = new MutableBoard(5);
         assertEquals("bad length", 5, B.size());
