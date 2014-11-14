@@ -68,8 +68,17 @@ class Game extends Observable {
         _board.clear(Defaults.BOARD_SIZE);
         // FIXME
         while (promptForNext()) {
-            readExecuteCommand();
-
+            int[] move = new int[2];
+            if (gameInProgress()) {
+                if (getMove(move)) {
+//                    message("%d %d\n", move[0], move[1]);
+                    int r = move[0];
+                    int c = move[1];
+                    makeMove(r, c);
+                }
+            } else {
+                readExecuteCommand();
+            }
             if (_exit == 0) {
                 break;
             }
@@ -227,12 +236,6 @@ class Game extends Observable {
         clear();
         _playing = true;
         announce();
-
-//        while (promptForNext()) {
-//            checkForWin();
-//            readExecuteCommand();
-//            announce();
-//        }
     }
 
     /** Save move R C in _move.  Error if R and C do not indicate an
@@ -258,7 +261,15 @@ class Game extends Observable {
         try {
             String str = _inp.nextLine();
             String command = canonicalizeCommand(str);
-            executeCommand(command);
+            String pattern = "^\\d+\\ \\d+.*";
+            if (command.matches(pattern)) {
+                String[] num = command.split(" ");
+                int r = Integer.valueOf(num[0]);
+                int c = Integer.valueOf(num[1]);
+                saveMove(r, c);
+            } else {
+                executeCommand(command);
+            }
         } catch (Exception e) {
             reportError(e.getMessage());
         }
