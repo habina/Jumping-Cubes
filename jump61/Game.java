@@ -47,6 +47,8 @@ class Game extends Observable {
         _inp.useDelimiter("\\p{Blank}*(?=[\r\n])|(?<=\n)|\\p{Blank}+");
         _out = new PrintWriter(output, true);
         _err = new PrintWriter(errorOutput, true);
+        setPlayer(RED, new HumanPlayer(this, RED));
+        setPlayer(BLUE, new AI(this, BLUE));
     }
 
     /** Returns a readonly view of the game board.  This board remains valid
@@ -153,12 +155,14 @@ class Game extends Observable {
     /** Make the player of COLOR an AI for subsequent moves. */
     private void setAuto(Side color) {
         // FIXME
+        setPlayer(color, new AI(this, color));
     }
 
     /** Make the player of COLOR take manual input from the user for
      *  subsequent moves. */
     private void setManual(Side color) {
         // FIXME
+        setPlayer(color, new HumanPlayer(this, color));
     }
 
     /** Return the Player playing COLOR. */
@@ -233,8 +237,6 @@ class Game extends Observable {
      *  immediately print a win message and end the game. */
     private void restartGame() {
         // FIXME
-        _players[0] = new HumanPlayer(this, RED);
-        _players[1] = new AI(this, BLUE);
         clear();
         _playing = true;
         announce();
