@@ -29,7 +29,7 @@ class Game extends Observable {
     private static final String[] COMMAND_NAMES = {
         "",
         "auto", "clear", "dump", "help", "manual",
-        "quit", "seed", "set", "size", "start", "verbose", "quiet"
+        "quit", "seed", "set", "size", "start", "verbose", "quiet", "new"
     };
 
     /** A new Game that takes command/move input from INPUT, prints
@@ -352,7 +352,7 @@ class Game extends Observable {
         case "size":
             setSize(_inp.nextInt());
             break;
-        case "start":
+        case "start": case "new":
             restartGame();
             break;
         case "verbose":
