@@ -29,7 +29,7 @@ class Game extends Observable {
     private static final String[] COMMAND_NAMES = {
         "",
         "auto", "clear", "dump", "help", "manual",
-        "quit", "seed", "set", "size", "start"
+        "quit", "seed", "set", "size", "start", "verbose"
     };
 
     /** A new Game that takes command/move input from INPUT, prints
@@ -39,6 +39,7 @@ class Game extends Observable {
      *  closing them when its play method returns. */
     Game(Reader input, Writer prompts, Writer output, Writer errorOutput) {
         _exit = -1;
+        _verbose = false;
         _board = new MutableBoard(Defaults.BOARD_SIZE);
         _readonlyBoard = new ConstantBoard(_board);
         _prompter = new PrintWriter(prompts, true);
@@ -75,6 +76,9 @@ class Game extends Observable {
                   int c = move[1];
                   reportMove(_board.whoseMove(), r, c);
                   makeMove(r, c);
+                  if (_verbose) {
+                      printBoard();
+                  }
                   if (_exit == 0) {
                       break;
                   }
@@ -184,6 +188,7 @@ class Game extends Observable {
      *  state. */
     void clear() {
         // FIXME
+        _verbose = false;
         _playing = false;
         _move[0] = 0;
         _move[1] = 0;
@@ -351,6 +356,9 @@ class Game extends Observable {
         case "start":
             restartGame();
             break;
+        case "verbose":
+            _verbose = true;
+            break;
         default:
             throw error("bad command: '%s'", cmnd);
         }
@@ -405,6 +413,8 @@ class Game extends Observable {
      *  at the earliest possible point, returning _exit.  When negative,
      *  indicates that the session is not over. */
     private int _exit;
+    /** When set to True, display the board after each move. */
+    private boolean _verbose;
 
     /** Current players, indexed by color (RED, BLUE). */
     private final Player[] _players = new Player[Side.values().length];

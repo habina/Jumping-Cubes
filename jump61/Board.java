@@ -185,12 +185,23 @@ abstract class Board extends Observable {
      *  human-readable textual display.  This is distinct from the dumped
      *  representation (returned by toString). */
     public String toDisplayString() {
-        StringBuilder out = new StringBuilder(toString());
-        out.delete(0, 3 + NL_LENGTH);
-        out.delete(out.length() - 3, out.length());
-        // THIS JUST STRIPS OFF THE BEGINNING AND TRAILING "===" LINES.
-        // INSERT STUFF TO MAKE IT BETTER?
-        return out.toString();
+        String output = "";
+        int row = 1;
+        String columnIndex = "";
+        for (int i = 0; i < _boardArray.length; i += 1) {
+            if (i % _size == 0) {
+                output += " " + row + "  " + _boardArray[i].toString() + " ";
+                columnIndex += row + "  ";
+                row += 1;
+            } else if((i + 1) % _size == 0) {
+                output += _boardArray[i].toString() + "\n";
+            } else {
+                output += _boardArray[i].toString() + " ";
+            }
+        }
+        columnIndex = "     " + columnIndex.trim();
+        output += columnIndex;
+        return output;
     }
 
     /** Returns the number of neighbors of the square at row R, column C. */
