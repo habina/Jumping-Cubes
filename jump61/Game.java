@@ -222,8 +222,24 @@ class Game extends Observable {
      *  the number of neighbors of square R, C. */
     private void setSpots(int r, int c, int spots, String color) {
         // FIXME
+        int neighbors = _board.neighbors(r, c);
+        boolean exist = _board.exists(r, c);
+        if (spots > neighbors || !exist) {
+            throw error("invalid request to put %d spots on square %d %d", spots, r, c);
+        }
+        clear();
         if (spots == 0) {
-            _board.set(r, c, spots, Side.valueOf(color));
+            _board.set(r, c, 1, WHITE);
+        } else {
+            if (color == null) {
+                throw error("syntax error in 'set' command");
+            }
+            if (color.charAt(0) == 'r') {
+                color = "red";
+            } else if (color.charAt(0) == 'b') {
+                color = "blue";
+            }
+            _board.set(r, c, spots, Side.parseSide(color));
         }
     }
 
