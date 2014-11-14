@@ -29,7 +29,7 @@ class Game extends Observable {
     private static final String[] COMMAND_NAMES = {
         "",
         "auto", "clear", "dump", "help", "manual",
-        "quit", "seed", "set", "size", "start", "verbose"
+        "quit", "seed", "set", "size", "start", "verbose", "quiet"
     };
 
     /** A new Game that takes command/move input from INPUT, prints
@@ -188,7 +188,6 @@ class Game extends Observable {
      *  state. */
     void clear() {
         // FIXME
-        _verbose = false;
         _playing = false;
         _move[0] = 0;
         _move[1] = 0;
@@ -358,6 +357,9 @@ class Game extends Observable {
             break;
         case "verbose":
             _verbose = true;
+            break;
+        case "quiet":
+            _verbose = false;
             break;
         default:
             throw error("bad command: '%s'", cmnd);
