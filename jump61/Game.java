@@ -67,8 +67,12 @@ class Game extends Observable {
         _out.flush();
         _board.clear(Defaults.BOARD_SIZE);
         // FIXME
-        if (promptForNext()) {
+        while (promptForNext()) {
             readExecuteCommand();
+
+            if (_exit == 0) {
+                break;
+            }
         }
         _prompter.close();
         _out.close();
@@ -220,13 +224,15 @@ class Game extends Observable {
      *  immediately print a win message and end the game. */
     private void restartGame() {
         // FIXME
-        this._playing = true;
+        clear();
+        _playing = true;
+        announce();
 
-        while (promptForNext()) {
-            checkForWin();
-            readExecuteCommand();
-            announce();
-        }
+//        while (promptForNext()) {
+//            checkForWin();
+//            readExecuteCommand();
+//            announce();
+//        }
     }
 
     /** Save move R C in _move.  Error if R and C do not indicate an
@@ -249,12 +255,13 @@ class Game extends Observable {
      *  a line, if there is more input. */
     private void readExecuteCommand() {
         // FIXME
-        String command = "";
-//        if (promptForNext()) {
+        try {
             String str = _inp.nextLine();
-            command = canonicalizeCommand(str);
+            String command = canonicalizeCommand(str);
             executeCommand(command);
-//        }
+        } catch (Exception e) {
+            reportError(e.getMessage());
+        }
     }
 
     /** Return the full, lower-case command name that uniquely fits
