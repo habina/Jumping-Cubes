@@ -68,24 +68,13 @@ class Game extends Observable {
         _out.flush();
         _board.clear(Defaults.BOARD_SIZE);
         // FIXME
-        int[] move = new int[2];
-        while (_exit != 0) {
-            if (gameInProgress()) {
-                while (getMove(move)) {
-                  int r = move[0];
-                  int c = move[1];
-                  reportMove(_board.whoseMove(), r, c);
-                  makeMove(r, c);
-                  if (_verbose) {
-                      printBoard();
-                  }
-                  if (_exit == 0) {
-                      break;
-                  }
-                }
-            } else {
-                promptForNext();
-                readExecuteCommand();
+        while (promptForNext()) {
+            readExecuteCommand();
+            if (_verbose) {
+                printBoard();
+            }
+            if (_exit == 0) {
+                break;
             }
         }
         _prompter.close();
@@ -230,6 +219,9 @@ class Game extends Observable {
     private void setSize(int n) {
         // FIXME
         if (n >= 2 && n <= 10) {
+            _playing = false;
+            _move[0] = 0;
+            _move[1] = 0;
             _board.clear(n);
             announce();
         } else {
@@ -241,6 +233,8 @@ class Game extends Observable {
      *  immediately print a win message and end the game. */
     private void restartGame() {
         // FIXME
+        _players[0] = new HumanPlayer(this, RED);
+        _players[1] = new AI(this, BLUE);
         clear();
         _playing = true;
         announce();
@@ -262,18 +256,23 @@ class Game extends Observable {
         return Side.parseSide(_inp.next("[rR][eE][dD]|[Bb][Ll][Uu][Ee]"));
     }
 
+    /** Eat the annoying newline. */
+    private void eatNewline() {
+        _inp.nextLine();
+    }
+    
     /** Read and execute one command.  Leave the input at the start of
      *  a line, if there is more input. */
     private void readExecuteCommand() {
         // FIXME
         try {
-            String str = _inp.nextLine();
+            String str = _inp.next();
             String command = canonicalizeCommand(str);
-            String pattern = "^\\d+\\ \\d+.*";
+            String pattern = "\\d+";
             if (command.matches(pattern)) {
-                String[] num = command.split(" ");
-                int r = Integer.valueOf(num[0]);
-                int c = Integer.valueOf(num[1]);
+                int r = Integer.valueOf(command);
+                int c = _inp.nextInt();
+                eatNewline();
                 saveMove(r, c);
             } else {
                 executeCommand(command);
@@ -362,8 +361,10 @@ class Game extends Observable {
             _verbose = false;
             break;
         default:
+            eatNewline();
             throw error("bad command: '%s'", cmnd);
         }
+        eatNewline();
     }
 
     /** Print a prompt and wait for input. Returns true iff there is another

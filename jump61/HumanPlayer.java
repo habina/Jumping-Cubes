@@ -22,6 +22,11 @@ class HumanPlayer extends Player {
      *  make that move in getGame().  Report erroneous moves to player. */
     void makeMove() {
         // FIXME
+        int[] move = new int[2];
+        while (!getGame().getMove(move)) {}
+        int r = move[0];
+        int c = move[1];
+        getGame().makeMove(r, c);
     }
 
 }
