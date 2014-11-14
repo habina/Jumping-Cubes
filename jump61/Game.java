@@ -285,6 +285,9 @@ class Game extends Observable {
                 int c = _inp.nextInt();
                 eatNewline();
                 saveMove(r, c);
+            } else if (command.matches(pattern) && !_playing) {
+                eatNewline();
+                throw error("no game in progress");
             } else {
                 executeCommand(command);
             }
