@@ -280,7 +280,7 @@ class Game extends Observable {
             String str = _inp.next();
             String command = canonicalizeCommand(str);
             String pattern = "\\d+";
-            if (command.matches(pattern)) {
+            if (command.matches(pattern) && _inp.hasNextInt()) {
                 int r = Integer.valueOf(command);
                 int c = _inp.nextInt();
                 eatNewline();
@@ -312,6 +312,7 @@ class Game extends Observable {
             }
             if (name.startsWith(command)) {
                 if (fullName != null) {
+                    eatNewline();
                     throw error("%s is not a unique command abbreviation",
                                 command);
                 }
