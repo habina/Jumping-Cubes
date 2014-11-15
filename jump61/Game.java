@@ -80,6 +80,7 @@ class Game extends Observable {
                     if (_verbose) {
                         printBoard();
                     }
+                    checkForWin();
                 } catch (Exception e) {
                     reportError(e.getMessage());
                 }
@@ -152,6 +153,7 @@ class Game extends Observable {
     private void checkForWin() {
         // FIXME
         if (_board.getWinner() != null) {
+            _playing = false;
             announceWinner();
         }
     }
@@ -260,6 +262,7 @@ class Game extends Observable {
     private void restartGame() {
         // FIXME
         _playing = true;
+        checkForWin();
         announce();
     }
 
