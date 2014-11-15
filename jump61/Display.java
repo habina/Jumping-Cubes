@@ -27,7 +27,7 @@ import static jump61.Side.*;
  *  a Writer.  The Game object need never know where its input is coming from.
  *  A Display is an Observer of Games and Boards so that it is notified when
  *  either changes.
- *  @author
+ *  @author Dasheng Chen
  */
 class Display extends TopLevel implements Observer {
 

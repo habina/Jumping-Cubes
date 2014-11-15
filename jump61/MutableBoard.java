@@ -49,10 +49,6 @@ class MutableBoard extends Board {
         this._size = board.size();
         this._boardArray = new Square[_size * _size];
         this.internalCopy(board);
-//        for (int i = 0; i < _boardArray.length; i += 1) {
-//            Square square = board._boardArray[i];
-//            _boardArray[i] = Square.square(square.getSide(), square.getSpots());
-//        }
     }
 
     /** Copy the contents of BOARD into me, without modifying my undo
