@@ -58,9 +58,15 @@ class AI extends Player {
      *  Higher is better for P. */
     private int staticEval(Side p, Board b) {
         // REPLACE WITH SOLUTIONs
+        int totalSquare = b.size() * b.size();
         int numForPlayer = b.numOfSide(p);
         int numForOpponent = b.numOfSide(p.opposite());
-        return 0;
+        if (numForPlayer == totalSquare) {
+            return Integer.MAX_VALUE;
+        } else if (numForOpponent == totalSquare) {
+            return Integer.MIN_VALUE;
+        }
+        return numForPlayer - numForOpponent;
     }
 
 }

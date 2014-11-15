@@ -291,9 +291,10 @@ class Game extends Observable {
      *  a line, if there is more input. */
     private void readExecuteCommand() {
         // FIXME
+        String command = "";
         try {
             String str = _inp.next();
-            String command = canonicalizeCommand(str);
+            command = canonicalizeCommand(str);
             String pattern = "\\d+";
             if (command.matches(pattern) && !_playing) {
                 throw error("no game in progress");
@@ -307,11 +308,14 @@ class Game extends Observable {
                 executeCommand(command);
             }
         } catch (InputMismatchException e) {
-            reportError("syntax error in 'set' command");
+            reportError("syntax error in '%s' command", command);
         } catch (Exception e) {
             reportError(e.getMessage());
+        } finally {
+            if (!(command.equals("\n") || command.equals("\r\n"))) {
+                eatNewline();
+            }
         }
-        eatNewline();
     }
 
     /** Return the full, lower-case command name that uniquely fits
