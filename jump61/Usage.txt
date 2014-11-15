@@ -1,2 +1,6 @@
-// FILL IN A HELPFUL USAGE MESSAGE, SHOWING HOW TO INVOKE THIS PROGRAM.
-
+Usage: java jump61.Main [ --display ] [ --strict ] [ --stats ]
+       java jump61.Main --version
+  --display: Use GUI
+  --strict:  Exits (code 1) on any user error.
+  --stats:   Print timing statistics when using AI
+  --version: Print version number and exit.
