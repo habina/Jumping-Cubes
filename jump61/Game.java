@@ -227,7 +227,7 @@ class Game extends Observable {
         if (spots > neighbors || !exist) {
             throw error("invalid request to put %d spots on square %d %d", spots, r, c);
         }
-        clear();
+        _playing = false;
         if (spots == 0) {
             _board.set(r, c, 1, WHITE);
         } else {
@@ -259,7 +259,6 @@ class Game extends Observable {
      *  immediately print a win message and end the game. */
     private void restartGame() {
         // FIXME
-        clear();
         _playing = true;
         announce();
     }
@@ -382,7 +381,11 @@ class Game extends Observable {
         case "size":
             setSize(_inp.nextInt());
             break;
-        case "start": case "new":
+        case "start":
+            restartGame();
+            break;
+        case "new":
+            clear();
             restartGame();
             break;
         case "verbose":
