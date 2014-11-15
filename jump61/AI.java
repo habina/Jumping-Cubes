@@ -51,22 +51,62 @@ class AI extends Player {
     private int minmax(Side p, Board b, int d, int cutoff,
                        ArrayList<Integer> moves) {
         // REPLACE WITH SOLUTION
+        
         return 0;
+    }
+    
+    /** Guess best move for player p. 
+     *  @param player player
+     *  @param b current board
+     *  @param cutoff cutoff value
+     *  @return a best position for move. */
+    private int guessBestMove(Side player, Board b, int cutoff) {
+        Board copyOfBoard = new MutableBoard(b);
+        ArrayList<Integer> moves = validMoves(player, b);
+        int bestMove = 0;
+        int bestMoveValue = Integer.MIN_VALUE;
+        for (Integer n : moves) {
+            copyOfBoard.addSpot(player, n);
+            int newMoveValue = staticEval(player, copyOfBoard);
+            if (newMoveValue > bestMoveValue) {
+                bestMoveValue = newMoveValue;
+                bestMove = n;
+                if (bestMoveValue >= cutoff) {
+                    break;
+                }
+            }
+        }
+        return bestMove;
     }
 
     /** Returns heuristic value of board B for player P.
      *  Higher is better for P. */
-    private int staticEval(Side p, Board b) {
+    private int staticEval(Side player, Board b) {
         // REPLACE WITH SOLUTIONs
-        int totalSquare = b.size() * b.size();
-        int numForPlayer = b.numOfSide(p);
-        int numForOpponent = b.numOfSide(p.opposite());
-        if (numForPlayer == totalSquare) {
+        int numForPlayer = b.numOfSide(player);
+        Side opponent = player.opposite();
+        int numForOpponent = b.numOfSide(opponent);
+        if (b.getWinner() == player) {
             return Integer.MAX_VALUE;
-        } else if (numForOpponent == totalSquare) {
+        } else if (b.getWinner() == opponent) {
             return Integer.MIN_VALUE;
         }
         return numForPlayer - numForOpponent;
     }
 
+    /** Find current available move for player p. */
+    private ArrayList<Integer> validMoves(Side p, Board b) {
+        if (b.getWinner() != null) {
+            return null;
+        }
+        ArrayList<Integer> moves = new ArrayList<Integer>();
+        int boardSize = b.size();
+        for (int i = 0; i < boardSize; i += 1) {
+            Square s = b.get(i);
+            if (s.getSide() == p) {
+                moves.add(i);
+            }
+        }
+        return moves;
+    }
 }
