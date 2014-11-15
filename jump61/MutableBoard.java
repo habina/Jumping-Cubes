@@ -33,7 +33,7 @@ class MutableBoard extends Board {
         // FIXME
         this._balanced = true;
         this._size = N;
-        this._boardStack = new Stack<MutableBoard>();
+        this._boardArrayStack = new Stack<Square[]>();
         this._boardArray = new Square[_size * _size];
         for (int i = 0; i < _boardArray.length; i += 1) {
             _boardArray[i] = Square.square(Side.WHITE, 1);
@@ -45,7 +45,7 @@ class MutableBoard extends Board {
     void copy(Board board) {
         // FIXME
         this._balanced = true;
-        this._boardStack = new Stack<MutableBoard>();
+        this._boardArrayStack = new Stack<Square[]>();
         this._size = board.size();
         this._boardArray = new Square[_size * _size];
         this.internalCopy(board);
@@ -182,17 +182,20 @@ class MutableBoard extends Board {
     @Override
     void undo() {
         // FIXME
-        if (!this._boardStack.empty()) {
-            MutableBoard oldBoard = this._boardStack.pop();
-            this.internalCopy(oldBoard);
+        if (!this._boardArrayStack.empty()) {
+            this._boardArray = this._boardArrayStack.pop();
         }
     }
 
     /** Record the beginning of a move in the undo history. */
     private void markUndo() {
         // FIXME
-        MutableBoard mBoard = new MutableBoard(this);
-        this._boardStack.push(mBoard);
+        Square[] newBoardArray = new Square[_boardArray.length];
+        for (int i = 0; i < _boardArray.length; i += 1) {
+            Square square = this._boardArray[i];
+            newBoardArray[i] = Square.square(square.getSide(), square.getSpots());
+        }
+        this._boardArrayStack.push(newBoardArray);
     }
 
     /** Set the contents of the square with index IND to SQ. Update counts
@@ -252,7 +255,7 @@ class MutableBoard extends Board {
     }
 
     /** History stack. */
-    private Stack<MutableBoard> _boardStack;
+    private Stack<Square[]> _boardArrayStack;
     /** True if board is balanced. */
     private boolean _balanced;
 }
