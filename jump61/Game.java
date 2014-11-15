@@ -77,9 +77,6 @@ class Game extends Observable {
                 Player player = getPlayer(color);
                 try {
                     player.makeMove();
-                    if (_verbose) {
-                        printBoard();
-                    }
                     checkForWin();
                 } catch (Exception e) {
                     reportError(e.getMessage());
@@ -121,6 +118,9 @@ class Game extends Observable {
     void makeMove(int r, int c) {
         if ( _board.isLegal(_board.whoseMove(), r, c)) {
             _board.addSpot(_board.whoseMove(), r, c);
+            if (_verbose) {
+                printBoard();
+            }
         } else {
             throw error("invalid move: %d %d", r, c);
         }
