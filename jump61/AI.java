@@ -57,7 +57,9 @@ class AI extends Player {
     /** Returns heuristic value of board B for player P.
      *  Higher is better for P. */
     private int staticEval(Side p, Board b) {
-        // REPLACE WITH SOLUTION
+        // REPLACE WITH SOLUTIONs
+        int numForPlayer = b.numOfSide(p);
+        int numForOpponent = b.numOfSide(p.opposite());
         return 0;
     }
 

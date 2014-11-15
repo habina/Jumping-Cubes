@@ -101,7 +101,6 @@ class MutableBoard extends Board {
     void addSpot(Side player, int r, int c) {
         // FIXME
         this.addSpot(player, this.sqNum(r, c));
-//        announce();
     }
 
     @Override
@@ -111,7 +110,7 @@ class MutableBoard extends Board {
         this.markUndo();
         set(n, spots, player);
         this.balanceBoard();
-//        announce();
+        announce();
     }
     
     /** Make the board balance. */
@@ -202,7 +201,6 @@ class MutableBoard extends Board {
         // FIXME
         this._boardArray[ind] = sq;
         this._balanced = false;
-        announce();
     }
 
     /** Notify all Observers of a change. */
