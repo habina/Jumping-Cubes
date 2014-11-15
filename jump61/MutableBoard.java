@@ -56,7 +56,7 @@ class MutableBoard extends Board {
     private void internalCopy(Board board) {
         // FIXME
         for (int i = 0; i < _boardArray.length; i += 1) {
-            Square square = board._boardArray[i];
+            Square square = board.get(i);
             _boardArray[i] = Square.square(square.getSide(), square.getSpots());
         }
     }
@@ -106,11 +106,13 @@ class MutableBoard extends Board {
     @Override
     void addSpot(Side player, int n) {
         // FIXME
-        int spots = this._boardArray[n].getSpots() + 1;
-        this.markUndo();
-        set(n, spots, player);
-        this.balanceBoard();
-        announce();
+        if (this.isLegal(player, n)) {
+            int spots = this._boardArray[n].getSpots() + 1;
+            this.markUndo();
+            set(n, spots, player);
+            this.balanceBoard();
+            announce();
+        }
     }
     
     /** Make the board balance. */

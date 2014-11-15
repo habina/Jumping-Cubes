@@ -13,7 +13,6 @@ class ConstantBoard extends Board {
      *  all operations are delegated to BOARD. */
     ConstantBoard(Board board) {
         _board = board;
-        this._boardArray = _board._boardArray;
     }
 
     @Override

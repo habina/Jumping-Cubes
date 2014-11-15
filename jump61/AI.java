@@ -21,6 +21,9 @@ class AI extends Player {
 
     /** Number of milliseconds in one second. */
     private static final double MILLIS = 1000.0;
+    
+    /** Deepth for explore GameTree. */
+    private static final int depth = 4;
 
     /** A new player of GAME initially playing COLOR that chooses
      *  moves automatically.
@@ -32,13 +35,14 @@ class AI extends Player {
     @Override
     void makeMove() {
         // FIXME
-        int[] move = new int[2];
-        if (getGame().getMove(move)) {
-            int r = move[0];
-            int c = move[1];
-            getGame().message("Blue moves %d %d.\n", r, c);
-            getGame().makeMove(r, c);
-        }
+        Side player = this.getSide();
+        Board b = this.getBoard();
+        int cutoff = Integer.MAX_VALUE;
+        int move = findBestMove(player, b, depth, cutoff);
+        int r = b.row(move);
+        int c = b.col(move);
+        getGame().message("Blue moves %d %d.\n", r, c);
+        getGame().makeMove(r, c);
     }
 
     /** Return the minimum of CUTOFF and the minmax value of board B
@@ -48,11 +52,32 @@ class AI extends Player {
      *  a list of all highest-scoring moves for P; clear it if
      *  non-null and CUTOFF is exceeded. the contents of B are
      *  invariant over this call. */
-    private int minmax(Side p, Board b, int d, int cutoff,
-                       ArrayList<Integer> moves) {
+    private int findBestMove(Side player, Board b, int d, int cutoff) {
         // REPLACE WITH SOLUTION
-        
-        return 0;
+        if (d == 0) {
+            return guessBestMove(player, b, cutoff);
+        }
+        ArrayList<Integer> moves = validMoves(player, b);
+        if (moves == null) {
+            return cutoff;
+        }
+        Board copyOfBoard = new MutableBoard(b);
+        int bestMove = Integer.MIN_VALUE;
+        int bestMoveValue = staticEval(player, copyOfBoard);
+        for (Integer n : moves) {
+            copyOfBoard.addSpot(player, n);
+            int newMoveValue = findBestMove(player.opposite(), copyOfBoard, d - 1, -bestMoveValue);
+            copyOfBoard.undo();
+            if (-newMoveValue > bestMoveValue) {
+                bestMoveValue = newMoveValue;
+                bestMove = n;
+                if (bestMoveValue >= cutoff) {
+                    moves.clear();
+                    break;
+                }
+            }
+        }
+        return bestMove;
     }
     
     /** Guess best move for player p. 
@@ -63,11 +88,15 @@ class AI extends Player {
     private int guessBestMove(Side player, Board b, int cutoff) {
         Board copyOfBoard = new MutableBoard(b);
         ArrayList<Integer> moves = validMoves(player, b);
-        int bestMove = 0;
+        if (moves == null) {
+            return cutoff;
+        }
+        int bestMove = Integer.MIN_VALUE;
         int bestMoveValue = Integer.MIN_VALUE;
         for (Integer n : moves) {
             copyOfBoard.addSpot(player, n);
             int newMoveValue = staticEval(player, copyOfBoard);
+            copyOfBoard.undo();
             if (newMoveValue > bestMoveValue) {
                 bestMoveValue = newMoveValue;
                 bestMove = n;
@@ -100,10 +129,11 @@ class AI extends Player {
             return null;
         }
         ArrayList<Integer> moves = new ArrayList<Integer>();
-        int boardSize = b.size();
+        int boardSize = b.size() * b.size();
+        Side opponent = p.opposite();
         for (int i = 0; i < boardSize; i += 1) {
             Square s = b.get(i);
-            if (s.getSide() == p) {
+            if (s.getSide() != opponent) {
                 moves.add(i);
             }
         }

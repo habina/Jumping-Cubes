@@ -52,6 +52,12 @@ public class BoardTest {
         A.copy(B);
         output = A.toString();
         assertEquals(true, B.toString().equals(output));
+        B.set(2, 3, RED);
+        B.set(4, 3, RED);
+        A = new MutableBoard(B);
+        output = A.toString();
+        assertEquals(true, B.toString().equals(output));
+
     }
     
     @Test
