@@ -33,6 +33,60 @@ public class BoardTest {
     }
     
     @Test
+    public void testClear() {
+        Board B = new MutableBoard(6);
+        String output = B.toString();
+        B.set(1, 3, RED);
+        assertEquals(false, B.toString().equals(output));
+        B.clear(B._size);
+        assertEquals(true, B.toString().equals(output));
+    }
+    
+    @Test
+    public void testCopy() {
+        Board A = new MutableBoard(6);
+        Board B = new MutableBoard(6);
+        String output = A.toString();
+        B.set(1, 3, RED);
+        assertEquals(false, B.toString().equals(output));
+        A.copy(B);
+        output = A.toString();
+        assertEquals(true, B.toString().equals(output));
+    }
+    
+    @Test
+    public void testNumPieces() {
+        Board A = new MutableBoard(6);
+        assertEquals(6 * 6, A.numPieces());
+        A.set(1, 3, RED);
+        assertEquals(6 * 6 + 2, A.numPieces());
+        A.set(1, 5, RED);
+        assertEquals(6 * 6 + 4, A.numPieces());
+    }
+    
+    @Test
+    public void testHashCode() {
+        Board A = new MutableBoard(6);
+        Board B = new MutableBoard(6);
+        assertEquals(A.hashCode(), B.hashCode());
+        A.set(1, 3, RED);
+        assertNotEquals(A.hashCode(), B.hashCode());
+        B.set(1, 3, RED);
+        assertEquals(A.hashCode(), B.hashCode());
+    }
+    
+    @Test
+    public void testEquals() {
+        Board A = new MutableBoard(6);
+        Board B = new MutableBoard(6);
+        assertEquals(true, A.equals(B));
+        A.set(1, 3, RED);
+        assertEquals(false, A.equals(B));
+        B.set(1, 3, RED);
+        assertEquals(true, A.equals(B));
+    }
+    
+    @Test
     public void testSize() {
         Board B = new MutableBoard(5);
         assertEquals("bad length", 5, B.size());

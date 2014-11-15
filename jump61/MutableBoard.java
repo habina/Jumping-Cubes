@@ -115,7 +115,7 @@ class MutableBoard extends Board {
     }
     
     /** Make the board balance. */
-    void balanceBoard() {
+    private void balanceBoard() {
         if (_balanced || getWinner() != null) {
             return;
         }
@@ -144,7 +144,7 @@ class MutableBoard extends Board {
      *  @param neighborNum number of neighbors
      *  @return a integer array
      */
-    int[] getNeighborIndex(int currentIndex, int neighborNum) {
+    private int[] getNeighborIndex(int currentIndex, int neighborNum) {
         int[] result = new int[neighborNum];
         int count = 0;
         int row = this.row(currentIndex);
