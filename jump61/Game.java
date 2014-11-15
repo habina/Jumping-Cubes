@@ -292,23 +292,23 @@ class Game extends Observable {
             String str = _inp.next();
             String command = canonicalizeCommand(str);
             String pattern = "\\d+";
-            if (command.matches(pattern) && _inp.hasNextInt()) {
+            if (command.matches(pattern) && !_playing) {
+                throw error("no game in progress");
+            } else if (command.matches(pattern) && _inp.hasNextInt()) {
                 int r = Integer.valueOf(command);
                 int c = _inp.nextInt();
-                eatNewline();
                 saveMove(r, c);
-            } else if (command.matches(pattern) && !_playing) {
-                eatNewline();
-                throw error("no game in progress");
+            } else if (command.matches(pattern) && !_inp.hasNextInt()) {
+                throw error("syntax error in '<move>' command");
             } else {
                 executeCommand(command);
             }
         } catch (InputMismatchException e) {
-            eatNewline();
             reportError("syntax error in 'set' command");
         } catch (Exception e) {
             reportError(e.getMessage());
         }
+        eatNewline();
     }
 
     /** Return the full, lower-case command name that uniquely fits
@@ -330,7 +330,6 @@ class Game extends Observable {
             }
             if (name.startsWith(command)) {
                 if (fullName != null) {
-                    eatNewline();
                     throw error("%s is not a unique command abbreviation",
                                 command);
                 }
@@ -395,10 +394,8 @@ class Game extends Observable {
             _verbose = false;
             break;
         default:
-            eatNewline();
             throw error("bad command: '%s'", cmnd);
         }
-        eatNewline();
     }
 
     /** Print a prompt and wait for input. Returns true iff there is another
