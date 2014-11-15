@@ -36,6 +36,7 @@ class AI extends Player {
         if (getGame().getMove(move)) {
             int r = move[0];
             int c = move[1];
+            getGame().message("Blue moves %d %d.\n", r, c);
             getGame().makeMove(r, c);
         }
     }
