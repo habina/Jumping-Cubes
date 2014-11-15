@@ -9,7 +9,7 @@ package jump61;
 import java.io.Reader;
 import java.io.Writer;
 import java.io.PrintWriter;
-
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.Random;
 import java.util.Observable;
@@ -231,9 +231,6 @@ class Game extends Observable {
         if (spots == 0) {
             _board.set(r, c, 1, WHITE);
         } else {
-            if (color == null) {
-                throw error("syntax error in 'set' command");
-            }
             if (color.charAt(0) == 'r') {
                 color = "red";
             } else if (color.charAt(0) == 'b') {
@@ -307,6 +304,9 @@ class Game extends Observable {
             } else {
                 executeCommand(command);
             }
+        } catch (InputMismatchException e) {
+            eatNewline();
+            reportError("syntax error in 'set' command");
         } catch (Exception e) {
             reportError(e.getMessage());
         }

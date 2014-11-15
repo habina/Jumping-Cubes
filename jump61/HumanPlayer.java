@@ -23,10 +23,11 @@ class HumanPlayer extends Player {
     void makeMove() {
         // FIXME
         int[] move = new int[2];
-        while (!getGame().getMove(move)) {}
-        int r = move[0];
-        int c = move[1];
-        getGame().makeMove(r, c);
+        if (getGame().getMove(move)) {
+            int r = move[0];
+            int c = move[1];
+            getGame().makeMove(r, c);
+        }
     }
 
 }
