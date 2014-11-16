@@ -48,6 +48,7 @@ class Game extends Observable {
         _out = new PrintWriter(output, true);
         _err = new PrintWriter(errorOutput, true);
         setPlayer(RED, new HumanPlayer(this, RED));
+//        setPlayer(BLUE, new HumanPlayer(this, RED));
         setPlayer(BLUE, new AI(this, BLUE));
     }
 
