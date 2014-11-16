@@ -23,35 +23,16 @@ class AI extends Player {
     private static final double MILLIS = 1000.0;
     
     /** Deepth for explore GameTree. */
-    private static final int depth = 4;
+    private static final int depth = 3;
+    
+    /** Best Move. */
+    private int bestMove;
 
     /** A new player of GAME initially playing COLOR that chooses
      *  moves automatically.
      */
     AI(Game game, Side color) {
         super(game, color);
-    }
-    
-    /** A move class. */
-    private class Move{
-        int move;
-        int value;
-        public Move(int move, int value) {
-            this.move = move;
-            this.value = value;
-        }
-        public int getMove() {
-            return move;
-        }
-        public void setMove(int move) {
-            this.move = move;
-        }
-        public int getValue() {
-            return value;
-        }
-        public void setValue(int value) {
-            this.value = value;
-        }
     }
 
     @Override
@@ -60,9 +41,10 @@ class AI extends Player {
         Side player = this.getSide();
         Board b = this.getBoard();
         int cutoff = 10000;
-        Move move = findBestMove(player, b, depth, cutoff);
-        int r = b.row(move.getValue());
-        int c = b.col(move.getValue());
+        findBestMove(player, b, depth, cutoff);
+//        int move = guessBestMove(player, b, cutoff);
+        int r = b.row(bestMove);
+        int c = b.col(bestMove);
         getGame().message("Blue moves %d %d.\n", r, c);
         getGame().makeMove(r, c);
     }
@@ -74,58 +56,63 @@ class AI extends Player {
      *  a list of all highest-scoring moves for P; clear it if
      *  non-null and CUTOFF is exceeded. the contents of B are
      *  invariant over this call. */
-    private Move findBestMove(Side player, Board b, int d, int cutoff) {
-        // REPLACE WITH SOLUTION
+    private int findBestMove(Side player, Board b, int d, int cutoff) {
+        ArrayList<Integer> moves = validMoves(player, b, cutoff);
+        if (moves == null) {
+            return staticEval(player, b);
+        }
         if (d == 0) {
             return guessBestMove(player, b, cutoff);
         }
-        ArrayList<Move> moves = validMoves(player, b, cutoff);
-        if (moves == null) {
-            return new Move(-1, staticEval(player, b));
-        }
         Board copyOfBoard = new MutableBoard(b);
-        Move bestMove = new Move(Integer.MIN_VALUE, cutoff);
-        for (Move m : moves) {
-            copyOfBoard.addSpot(player, m.getMove());
-            int negaBestValue = bestMove.getValue() * -1;
-            Move newMove = findBestMove(player.opposite(), copyOfBoard, d - 1, negaBestValue);
+        int currentBestValue = cutoff * -1;
+        for (Integer m : moves) {
+            copyOfBoard.addSpot(player, m);
+            int negaBestValue = currentBestValue * -1;
+            int newMoveValue = findBestMove(player.opposite(), copyOfBoard, d - 1, negaBestValue);
             copyOfBoard.undo();
-            int negaNewValue = newMove.getValue() * -1;
-            if (negaNewValue > bestMove.getValue()) {
-                m.setValue(negaNewValue);
-                bestMove = m;
-                if (bestMove.getValue() >= cutoff) {
+            int negaNewValue = newMoveValue * -1;
+            if (negaNewValue > currentBestValue) {
+                currentBestValue = negaNewValue;
+                if (d == depth){
+                    bestMove = m;
+                }
+                if (currentBestValue >= cutoff) {
                     break;
                 }
             }
         }
-        return bestMove;
+        return currentBestValue;
     }
     
     /** Guess best move for player p. 
      *  @param player player
      *  @param b current board
      *  @param cutoff cutoff value
-     *  @return a best position for move. */
-    private Move guessBestMove(Side player, Board b, int cutoff) {
+     *  @return a best board static value. */
+    private int guessBestMove(Side player, Board b, int cutoff) {
         Board copyOfBoard = new MutableBoard(b);
-        ArrayList<Move> moves = validMoves(player, b, cutoff);
+        ArrayList<Integer> moves = validMoves(player, b, cutoff);
         if (moves == null) {
-            return new Move(-1, staticEval(player, b));
+            System.out.println("guessBestMove: no more moves");
+            return -2;
         }
-        Move bestMove = new Move(Integer.MIN_VALUE, cutoff);
-        for (Move m : moves) {
-            copyOfBoard.addSpot(player, m.getMove());
-            m.setValue(staticEval(player, copyOfBoard));
+        int currentBestValue = -10001;
+        for (Integer m : moves) {
+            copyOfBoard.addSpot(player, m);
+            int newBestValue = staticEval(player, copyOfBoard);
             copyOfBoard.undo();
-            if (m.getValue() > bestMove.getValue()) {
-                bestMove = m;
-                if (bestMove.getValue() >= cutoff) {
+            if (newBestValue > currentBestValue) {
+                currentBestValue = newBestValue;
+                if (getSide() == player) {
+                    bestMove = m;
+                }
+                if (currentBestValue >= cutoff) {
                     break;
                 }
             }
         }
-        return bestMove;
+        return currentBestValue;
     }
 
     /** Returns heuristic value of board B for player P.
@@ -138,23 +125,23 @@ class AI extends Player {
         if (b.getWinner() == player) {
             return 10000;
         } else if (b.getWinner() == opponent) {
-            return -10000;
+            return -10001;
         }
         return numForPlayer - numForOpponent;
     }
 
     /** Find current available move for player p. */
-    private ArrayList<Move> validMoves(Side player, Board b, int cutoff) {
+    private ArrayList<Integer> validMoves(Side player, Board b, int cutoff) {
         if (b.getWinner() != null) {
             return null;
         }
-        ArrayList<Move> moves = new ArrayList<Move>();
+        ArrayList<Integer> moves = new ArrayList<Integer>();
         int boardSize = b.size() * b.size();
         Side opponent = player.opposite();
         for (int i = 0; i < boardSize; i += 1) {
             Square s = b.get(i);
             if (s.getSide() != opponent) {
-                moves.add(new Move(i, cutoff));
+                moves.add(i);
             }
         }
         return moves;

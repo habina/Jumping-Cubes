@@ -117,7 +117,7 @@ class Game extends Observable {
 
     /** Add a spot to R C, if legal to do so. */
     void makeMove(int r, int c) {
-        if ( _board.isLegal(_board.whoseMove(), r, c)) {
+        if (_board.isLegal(_board.whoseMove(), r, c)) {
             _board.addSpot(_board.whoseMove(), r, c);
             if (_verbose) {
                 printBoard();
