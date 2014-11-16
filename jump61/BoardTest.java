@@ -22,12 +22,12 @@ public class BoardTest {
     public void testToString() {
         Board B = new MutableBoard(6);
         String output = "===\n";
-        output += "1- 1- 1- 1- 1- 1-\n";
-        output += "1- 1- 1- 1- 1- 1-\n";
-        output += "1- 1- 1- 1- 1- 1-\n";
-        output += "1- 1- 1- 1- 1- 1-\n";
-        output += "1- 1- 1- 1- 1- 1-\n";
-        output += "1- 1- 1- 1- 1- 1-\n";
+        output += "    1- 1- 1- 1- 1- 1-\n";
+        output += "    1- 1- 1- 1- 1- 1-\n";
+        output += "    1- 1- 1- 1- 1- 1-\n";
+        output += "    1- 1- 1- 1- 1- 1-\n";
+        output += "    1- 1- 1- 1- 1- 1-\n";
+        output += "    1- 1- 1- 1- 1- 1-\n";
         output += "===";
         assertEquals(output, B.toString());
     }

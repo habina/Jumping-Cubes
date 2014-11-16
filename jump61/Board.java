@@ -171,6 +171,9 @@ abstract class Board extends Observable {
         // REPLACE WITH SOLUTION
         String output = "===\n";
         for (int i = 0; i < _boardArray.length; i += 1) {
+            if(i % _size == 0) {
+                output += "    ";
+            }
             if ((i + 1) % _size == 0) {
                 output += _boardArray[i].toString() + "\n";
             } else {
