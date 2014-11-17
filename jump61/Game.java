@@ -27,7 +27,6 @@ class Game extends Observable {
 
     /** A list of all commands. */
     private static final String[] COMMAND_NAMES = {
-        "",
         "auto", "clear", "dump", "help", "manual",
         "quit", "seed", "set", "size", "start", "verbose", "quiet", "new"
     };
@@ -87,6 +86,7 @@ class Game extends Observable {
                 break;
             }
         }
+        _exit = 0;
         _prompter.close();
         _out.close();
         _err.close();
@@ -294,6 +294,9 @@ class Game extends Observable {
         // FIXME
         String command = "";
         try {
+            if (_inp.hasNext(" ")) {
+                _inp.next();
+            }
             String str = _inp.next();
             command = canonicalizeCommand(str);
             String pattern = "\\d+";
