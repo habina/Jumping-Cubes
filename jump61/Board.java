@@ -85,7 +85,6 @@ abstract class Board extends Observable {
     /** Returns true iff it would currently be legal for PLAYER to add a spot
      *  to square #N. */
     boolean isLegal(Side player, int n) {
-        // REPLACE WITH SOLUTION
         if (exists(n)) {
             Side side = this.get(n).getSide();
             return player.playableSquare(side);
@@ -95,7 +94,6 @@ abstract class Board extends Observable {
 
     /** Returns true iff PLAYER is allowed to move at this point. */
     boolean isLegal(Side player) {
-        // REPLACE WITH SOLUTION
         Side opposite = player.opposite();
         Side nextSide = this.whoseMove();
         return nextSide.playableSquare(opposite);
@@ -104,7 +102,6 @@ abstract class Board extends Observable {
     /** Returns the winner of the current position, if the game is over,
      *  and otherwise null. */
     final Side getWinner() {
-        // REPLACE WITH SOLUTION
         int boardSize = size() * size();
         if (numOfSide(Side.BLUE) == boardSize) {
             return Side.BLUE;
@@ -141,23 +138,6 @@ abstract class Board extends Observable {
         unsupported("set");
     }
 
-    // There are two obvious ways to conduct a game-tree search in the AI.
-    //
-    // First, you can explore the consequences of a possible move from
-    // position A by making a copy of the Board in position A, and then
-    // modifying that copy.  Since you retain position A, you can return to
-    // it to try other moves from that position.  With this strategy, you
-    // will not need the undo method and can remove it from Board and
-    // its subclasses.
-    //
-    // Second, you can explore the consequences of a possible move from
-    // position A by making that move on your Board and then, when your
-    // analysis of the move is complete, undoing the move to return you to
-    // position A.  This method is more complicated to implement, but has
-    // the advantage that it can be considerably faster than making copies
-    // of the Board (you will need one copy per move tried, which will very
-    // quickly be thrown away).
-
     /** Undo the effects of one move (that is, one addSpot command).  One
      *  can only undo back to the last point at which the undo history
      *  was cleared, or the construction of this Board. */
@@ -168,10 +148,9 @@ abstract class Board extends Observable {
     /** Returns my dumped representation. */
     @Override
     public String toString() {
-        // REPLACE WITH SOLUTION
         String output = "===\n";
         for (int i = 0; i < _boardArray.length; i += 1) {
-            if(i % _size == 0) {
+            if (i % _size == 0) {
                 output += "    ";
             }
             if ((i + 1) % _size == 0) {
@@ -196,7 +175,7 @@ abstract class Board extends Observable {
                 output += " " + row + "  " + _boardArray[i].toString() + " ";
                 columnIndex += row + "  ";
                 row += 1;
-            } else if((i + 1) % _size == 0) {
+            } else if ((i + 1) % _size == 0) {
                 output += _boardArray[i].toString() + "\n";
             } else {
                 output += _boardArray[i].toString() + " ";

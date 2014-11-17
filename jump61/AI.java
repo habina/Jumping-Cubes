@@ -1,9 +1,3 @@
-// This file contains a SUGGESTION for the structure of your program.  You
-// may change any of it, or add additional files to this directory (package),
-// as long as you conform to the project specification.
-
-// Comments that start with "//" are intended to be removed from your
-// solutions.
 package jump61;
 
 import java.util.ArrayList;
@@ -21,13 +15,13 @@ class AI extends Player {
 
     /** Number of milliseconds in one second. */
     private static final double MILLIS = 1000.0;
-    
+
     /** Deepth for explore GameTree. */
     private static final int depth = 4;
-    
+
     /** Best Move. */
     private int bestMove = -1;
-    
+
     /** Start Time. */
     private long startTime;
 
@@ -40,7 +34,6 @@ class AI extends Player {
 
     @Override
     void makeMove() {
-        // FIXME
         Side player = this.getSide();
         Board b = this.getBoard();
         double cutoff = Double.MAX_VALUE;
@@ -50,7 +43,6 @@ class AI extends Player {
         int r = b.row(bestMove);
         int c = b.col(bestMove);
         getGame().message("%s moves %d %d.\n", getSide().toCapitalizedString(), r, c);
-//        getGame().message("%d\n", getBoard().numPieces());
         getGame().makeMove(r, c);
     }
 
@@ -114,7 +106,7 @@ class AI extends Player {
         }
         return currentBestValue;
     }
-    
+
     /** Guess best move for player p. 
      *  @param player player
      *  @param b current board
@@ -148,8 +140,6 @@ class AI extends Player {
                     }
                 }
             }
-            
-            
         }
         return currentBestValue;
     }
@@ -157,7 +147,6 @@ class AI extends Player {
     /** Returns heuristic value of board B for player P.
      *  Higher is better for P. */
     private double staticEval(Side player, Board b) {
-        // REPLACE WITH SOLUTIONs
         int numForPlayer = b.numOfSide(player);
         double sum = 1.0 * b.numPieces();
         return numForPlayer / sum;

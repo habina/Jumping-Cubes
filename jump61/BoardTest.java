@@ -1,9 +1,3 @@
-// This file contains a SUGGESTION for the structure of your program.  You
-// may change any of it, or add additional files to this directory (package),
-// as long as you conform to the project specification.
-
-// Comments that start with "//" are intended to be removed from your
-// solutions.
 package jump61;
 
 import static jump61.Side.*;
@@ -31,7 +25,7 @@ public class BoardTest {
         output += "===";
         assertEquals(output, B.toString());
     }
-    
+
     @Test
     public void testClear() {
         Board B = new MutableBoard(6);
@@ -41,7 +35,7 @@ public class BoardTest {
         B.clear(B._size);
         assertEquals(true, B.toString().equals(output));
     }
-    
+
     @Test
     public void testCopy() {
         Board A = new MutableBoard(6);
@@ -59,7 +53,7 @@ public class BoardTest {
         assertEquals(true, B.toString().equals(output));
 
     }
-    
+
     @Test
     public void testNumPieces() {
         Board A = new MutableBoard(6);
@@ -69,7 +63,7 @@ public class BoardTest {
         A.set(1, 5, RED);
         assertEquals(6 * 6 + 4, A.numPieces());
     }
-    
+
     @Test
     public void testHashCode() {
         Board A = new MutableBoard(6);
@@ -80,7 +74,7 @@ public class BoardTest {
         B.set(1, 3, RED);
         assertEquals(A.hashCode(), B.hashCode());
     }
-    
+
     @Test
     public void testEquals() {
         Board A = new MutableBoard(6);
@@ -91,7 +85,7 @@ public class BoardTest {
         B.set(1, 3, RED);
         assertEquals(true, A.equals(B));
     }
-    
+
     @Test
     public void testSize() {
         Board B = new MutableBoard(5);
@@ -161,5 +155,4 @@ public class BoardTest {
         }
         assertEquals("extra squares filled", contents.length / 4, c);
     }
-
 }

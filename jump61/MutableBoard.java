@@ -1,9 +1,3 @@
-// This file contains a SUGGESTION for the structure of your program.  You
-// may change any of it, or add additional files to this directory (package),
-// as long as you conform to the project specification.
-
-// Comments that start with "//" are intended to be removed from your
-// solutions.
 package jump61;
 
 import static jump61.Square.square;
@@ -17,20 +11,17 @@ class MutableBoard extends Board {
 
     /** An N x N board in initial configuration. */
     MutableBoard(int N) {
-        // FIXME
         this.clear(N);
     }
 
     /** A board whose initial contents are copied from BOARD0, but whose
      *  undo history is clear. */
     MutableBoard(Board board0) {
-        // FIXME
         this.copy(board0);
     }
 
     @Override
     void clear(int N) {
-        // FIXME
         this._balanced = true;
         this._size = N;
         this._boardArrayStack = new Stack<Square[]>();
@@ -43,7 +34,6 @@ class MutableBoard extends Board {
 
     @Override
     void copy(Board board) {
-        // FIXME
         this._balanced = true;
         this._boardArrayStack = new Stack<Square[]>();
         this._size = board.size();
@@ -54,7 +44,6 @@ class MutableBoard extends Board {
     /** Copy the contents of BOARD into me, without modifying my undo
      *  history.  Assumes BOARD and I have the same size. */
     private void internalCopy(Board board) {
-        // FIXME
         for (int i = 0; i < _boardArray.length; i += 1) {
             Square square = board.get(i);
             _boardArray[i] = Square.square(square.getSide(), square.getSpots());
@@ -63,19 +52,16 @@ class MutableBoard extends Board {
 
     @Override
     int size() {
-        // REPLACE WITH SOLUTION
         return this._size;
     }
 
     @Override
     Square get(int n) {
-        // REPLACE WITH SOLUTION
         return this._boardArray[n];
     }
 
     @Override
     int numOfSide(Side side) {
-        // REPLACE WITH SOLUTION
         String sideName = side.name();
         int count = 0;
         for (int i = 0; i < _boardArray.length; i += 1) {
@@ -89,7 +75,6 @@ class MutableBoard extends Board {
 
     @Override
     int numPieces() {
-        // REPLACE WITH SOLUTION
         int count = 0;
         for (int i = 0; i < _boardArray.length; i += 1) {
             count += _boardArray[i].getSpots();
@@ -99,13 +84,11 @@ class MutableBoard extends Board {
 
     @Override
     void addSpot(Side player, int r, int c) {
-        // FIXME
         this.addSpot(player, this.sqNum(r, c));
     }
 
     @Override
     void addSpot(Side player, int n) {
-        // FIXME
         if (this.isLegal(player, n)) {
             int spots = this._boardArray[n].getSpots() + 1;
             this.markUndo();
@@ -114,7 +97,7 @@ class MutableBoard extends Board {
             announce();
         }
     }
-    
+
     /** Make the board balance. */
     private void balanceBoard() {
         if (_balanced || getWinner() != null) {
@@ -183,7 +166,6 @@ class MutableBoard extends Board {
 
     @Override
     void undo() {
-        // FIXME
         if (!this._boardArrayStack.empty()) {
             this._boardArray = this._boardArrayStack.pop();
         }
@@ -191,11 +173,11 @@ class MutableBoard extends Board {
 
     /** Record the beginning of a move in the undo history. */
     private void markUndo() {
-        // FIXME
         Square[] newBoardArray = new Square[_boardArray.length];
         for (int i = 0; i < _boardArray.length; i += 1) {
             Square square = this._boardArray[i];
-            newBoardArray[i] = Square.square(square.getSide(), square.getSpots());
+            newBoardArray[i] = Square.square(square.getSide(),
+                square.getSpots());
         }
         this._boardArrayStack.push(newBoardArray);
     }
@@ -203,7 +185,6 @@ class MutableBoard extends Board {
     /** Set the contents of the square with index IND to SQ. Update counts
      *  of numbers of squares of each color.  */
     private void internalSet(int ind, Square sq) {
-        // FIXME
         this._boardArray[ind] = sq;
         this._balanced = false;
     }
@@ -219,7 +200,6 @@ class MutableBoard extends Board {
         if (!(obj instanceof MutableBoard)) {
             return obj.equals(this);
         } else {
-            // REPLACE WITH SOLUTION
             try {
                 MutableBoard mtBoard = (MutableBoard) obj;
                 if (mtBoard.size() != this._size
@@ -242,10 +222,6 @@ class MutableBoard extends Board {
 
     @Override
     public int hashCode() {
-        // REPLACE WITH SOLUTION.  RETURN A NUMBER THAT IS THE SAME FOR BOARDS
-        // WITH IDENTICAL CONTENTS (IT NEED NOT BE DIFFERENT IF THE BOARDS
-        // DIFFER.)  THE CURRENT STATEMENT WORKS, BUT IS NOT PARTICULARLY
-        // EFFICIENT.
         int result = 11;
         int code = this._size;
         final int prime = 31;

@@ -1,9 +1,3 @@
-// This file contains a SUGGESTION for the structure of your program.  You
-// may change any of it, or add additional files to this directory (package),
-// as long as you conform to the project specification.
-
-// Comments that start with "//" are intended to be removed from your
-// solutions.
 package jump61;
 
 /** A Player that gets its moves from manual input.
@@ -21,7 +15,6 @@ class HumanPlayer extends Player {
     /** Retrieve moves using getGame().getMove() until a legal one is found and
      *  make that move in getGame().  Report erroneous moves to player. */
     void makeMove() {
-        // FIXME
         int[] move = new int[2];
         if (getGame().getMove(move)) {
             int r = move[0];

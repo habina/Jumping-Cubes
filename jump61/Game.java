@@ -1,9 +1,3 @@
-// This file contains a SUGGESTION for the structure of your program.  You
-// may change any of it, or add additional files to this directory (package),
-// as long as you conform to the project specification.
-
-// Comments that start with "//" are intended to be removed from your
-// solutions.
 package jump61;
 
 import java.io.Reader;
@@ -68,7 +62,6 @@ class Game extends Observable {
         _out.println("Welcome to " + Defaults.VERSION);
         _out.flush();
         _board.clear(Defaults.BOARD_SIZE);
-        // FIXME
         while (promptForNext()) {
             readExecuteCommand();
             while (gameInProgress()) {
@@ -151,7 +144,6 @@ class Game extends Observable {
     /** Check whether we are playing and there is an unannounced winner.
      *  If so, announce and stop play. */
     private void checkForWin() {
-        // FIXME
         if (_board.getWinner() != null) {
             _playing = false;
             announceWinner();
@@ -165,26 +157,22 @@ class Game extends Observable {
 
     /** Make the player of COLOR an AI for subsequent moves. */
     private void setAuto(Side color) {
-        // FIXME
         setPlayer(color, new AI(this, color));
     }
 
     /** Make the player of COLOR take manual input from the user for
      *  subsequent moves. */
     private void setManual(Side color) {
-        // FIXME
         setPlayer(color, new HumanPlayer(this, color));
     }
 
     /** Return the Player playing COLOR. */
     private Player getPlayer(Side color) {
-        // FIXME
         return _players[color.ordinal()];
     }
 
     /** Set getPlayer(COLOR) to PLAYER. */
     private void setPlayer(Side color, Player player) {
-        // FIXME
         _playing = false;
         _players[color.ordinal()] = player;
     }
@@ -192,7 +180,6 @@ class Game extends Observable {
     /** Stop any current game and clear the board to its initial
      *  state. */
     void clear() {
-        // FIXME
         _playing = false;
         _move[0] = 0;
         _move[1] = 0;
@@ -224,11 +211,11 @@ class Game extends Observable {
      *  0, clears the square, ignoring COLOR.  SPOTS must be less than
      *  the number of neighbors of square R, C. */
     private void setSpots(int r, int c, int spots, String color) {
-        // FIXME
         int neighbors = _board.neighbors(r, c);
         boolean exist = _board.exists(r, c);
         if (spots > neighbors || !exist) {
-            throw error("invalid request to put %d spots on square %d %d", spots, r, c);
+            throw error("invalid request to put %d spots on square %d %d",
+                spots, r, c);
         }
         _playing = false;
         if (spots == 0) {
@@ -246,7 +233,6 @@ class Game extends Observable {
     /** Stop any current game and set the board to an empty N x N board
      *  with numMoves() == 0.  Requires 2 <= N <= 10. */
     private void setSize(int n) {
-        // FIXME
         if (n >= 2 && n <= 10) {
             _playing = false;
             _move[0] = 0;
@@ -261,7 +247,6 @@ class Game extends Observable {
     /** Begin accepting moves for game.  If the game is won,
      *  immediately print a win message and end the game. */
     private void restartGame() {
-        // FIXME
         _playing = true;
         checkForWin();
         announce();
@@ -291,7 +276,6 @@ class Game extends Observable {
     /** Read and execute one command.  Leave the input at the start of
      *  a line, if there is more input. */
     private void readExecuteCommand() {
-        // FIXME
         String command = "";
         try {
             if (_inp.hasNext(" ")) {

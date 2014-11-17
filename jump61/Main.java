@@ -28,15 +28,12 @@ public class Main {
      *  '--display' to indicate that the game is played using a GUI. Prints
      *  a usage message if the arguments are wrong. */
     public static void main(String[] args0) {
-        // FEEL FREE TO ADD MORE OPTIONS, IF DESIRED.
         CommandArgs args =
             new CommandArgs("--display{0,1}", args0);
-
         if (!args.ok()) {
             usage();
             return;
         }
-
         Game game;
         if (args.contains("--display")) {
             try {
@@ -46,9 +43,6 @@ public class Main {
                     new PipedReader(commandWriter, COMMAND_BUFFER_SIZE);
                 game = new Game(commandReader, trash, trash, trash);
                 Display display = new Display("Jump61", game, commandWriter);
-                // If you choose to implement the optional GUI, remove the
-                // following two lines.  Otherwise, replace this entire
-                // try-catch block with these two lines.
                 System.err.println("No graphical interface implemented");
                 System.exit(1);
             } catch (IOException excp) {

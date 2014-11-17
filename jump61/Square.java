@@ -38,7 +38,7 @@ class Square {
     int getSpots() {
         return _spots;
     }
-    
+
     @Override
     public String toString() {
         Side side = getSide();

@@ -62,7 +62,6 @@ class ConstantBoard extends Board {
 
     @Override
     public String toString() {
-        // REPLACE WITH SOLUTION
         return _board.toString();
     }
 
