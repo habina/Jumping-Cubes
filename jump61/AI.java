@@ -26,7 +26,7 @@ class AI extends Player {
     private static final int depth = 3;
     
     /** Best Move. */
-    private int bestMove;
+    private int bestMove = -1;
 
     /** A new player of GAME initially playing COLOR that chooses
      *  moves automatically.
@@ -41,12 +41,15 @@ class AI extends Player {
         Side player = this.getSide();
         Board b = this.getBoard();
         int cutoff = 10000;
-        findBestMove(player, b, depth, cutoff);
+        ArrayList<Integer> moves = validMoves(player, b);
+        findBestMove(player, b, depth, cutoff, moves);
 //        int move = guessBestMove(player, b, cutoff);
         int r = b.row(bestMove);
         int c = b.col(bestMove);
         getGame().message("%s moves %d %d.\n", getSide().toCapitalizedString(), r, c);
+        getGame().message("%d\n", getBoard().numPieces());
         getGame().makeMove(r, c);
+        bestMove = -2;
     }
 
     /** Return the minimum of CUTOFF and the minmax value of board B
@@ -56,28 +59,29 @@ class AI extends Player {
      *  a list of all highest-scoring moves for P; clear it if
      *  non-null and CUTOFF is exceeded. the contents of B are
      *  invariant over this call. */
-    private int findBestMove(Side player, Board b, int d, int cutoff) {
-        ArrayList<Integer> moves = validMoves(player, b, cutoff);
+    private int findBestMove(Side player, Board b, int d, int cutoff, ArrayList<Integer> moves) {
         if (moves == null) {
             return staticEval(player, b);
         }
         if (d == 0) {
-            return guessBestMove(player, b, cutoff);
+            return guessBestMove(player, b, cutoff, moves);
         }
         Board copyOfBoard = new MutableBoard(b);
         int currentBestValue = cutoff * -1;
         for (Integer m : moves) {
             copyOfBoard.addSpot(player, m);
             int negaBestValue = currentBestValue * -1;
-            int newMoveValue = findBestMove(player.opposite(), copyOfBoard, d - 1, negaBestValue);
+            ArrayList<Integer> nextMoves = validMoves(player, copyOfBoard);
+            int newMoveValue = findBestMove(player.opposite(), copyOfBoard, d - 1, negaBestValue, nextMoves);
             copyOfBoard.undo();
             int negaNewValue = newMoveValue * -1;
-            if (negaNewValue > currentBestValue) {
+            if (negaNewValue >= currentBestValue) {
                 currentBestValue = negaNewValue;
                 if (d == depth){
                     bestMove = m;
                 }
                 if (currentBestValue >= cutoff) {
+                    moves.clear();
                     break;
                 }
             }
@@ -90,13 +94,8 @@ class AI extends Player {
      *  @param b current board
      *  @param cutoff cutoff value
      *  @return a best board static value. */
-    private int guessBestMove(Side player, Board b, int cutoff) {
+    private int guessBestMove(Side player, Board b, int cutoff, ArrayList<Integer> moves) {
         Board copyOfBoard = new MutableBoard(b);
-        ArrayList<Integer> moves = validMoves(player, b, cutoff);
-        if (moves == null) {
-            System.out.println("guessBestMove: no more moves");
-            return -2;
-        }
         int currentBestValue = -10001;
         for (Integer m : moves) {
             copyOfBoard.addSpot(player, m);
@@ -104,9 +103,7 @@ class AI extends Player {
             copyOfBoard.undo();
             if (newBestValue > currentBestValue) {
                 currentBestValue = newBestValue;
-                if (getSide() == player) {
-                    bestMove = m;
-                }
+                bestMove = m;
                 if (currentBestValue >= cutoff) {
                     break;
                 }
@@ -131,7 +128,7 @@ class AI extends Player {
     }
 
     /** Find current available move for player p. */
-    private ArrayList<Integer> validMoves(Side player, Board b, int cutoff) {
+    private ArrayList<Integer> validMoves(Side player, Board b) {
         if (b.getWinner() != null) {
             return null;
         }

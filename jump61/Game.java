@@ -186,6 +186,7 @@ class Game extends Observable {
     /** Set getPlayer(COLOR) to PLAYER. */
     private void setPlayer(Side color, Player player) {
         // FIXME
+        _playing = false;
         _players[color.ordinal()] = player;
     }
 
