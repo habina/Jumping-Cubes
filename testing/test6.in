@@ -1,0 +1,17 @@
+staff-jump61
+java -ea jump61.Main
+===#1===
+size 4
+auto red
+manual blue
+start
+%mr
+%ib...
+%e
+quit
+===#2===
+size 4
+start
+%ir...
+%e
+quit
