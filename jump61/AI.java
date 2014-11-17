@@ -23,7 +23,7 @@ class AI extends Player {
     private static final double MILLIS = 1000.0;
     
     /** Deepth for explore GameTree. */
-    private static final int depth = 4;
+    private static final int depth = 3;
     
     /** Best Move. */
     private int bestMove = -1;
@@ -41,8 +41,9 @@ class AI extends Player {
         Side player = this.getSide();
         Board b = this.getBoard();
         double cutoff = Integer.MAX_VALUE;
-        ArrayList<Integer> moves = validMoves(player, b);
-        findBestMove(player, b, depth, cutoff, moves);
+//        ArrayList<Integer> moves = validMoves(player, b);
+//        findBestMove(player, b, depth, cutoff, moves);
+        alphaBetaMinimax(player, b, depth, Double.MIN_VALUE, Double.MAX_VALUE);
         int r = b.row(bestMove);
         int c = b.col(bestMove);
         getGame().message("%s moves %d %d.\n", getSide().toCapitalizedString(), r, c);
@@ -50,6 +51,120 @@ class AI extends Player {
         getGame().makeMove(r, c);
     }
 
+    
+    
+    private double alphaBetaMinimax(Side player, Board b, int d, double alpha, double beta) {
+        ArrayList<Integer> moves = validMoves(player, b);
+        boolean isMax = true;
+        if (player != getSide()) {
+            isMax = false;
+        }
+        if (moves == null) {
+            if (isMax) {
+                return Double.MIN_VALUE;
+            }
+            return Double.MAX_VALUE;
+        }
+
+        if (d == 0) {
+            guessBestMove(player, b, moves, alpha, beta, isMax);
+        }
+        
+        if (d == AI.depth) {
+            bestMove = moves.get(0);
+            if (moves.size() == 1) {
+                //need to revise
+                return -1000;
+            }
+        }
+        
+        Board copyOfBoard = new MutableBoard(b);
+        
+        for (Integer m : moves) {
+            copyOfBoard.addSpot(player, m);
+            double response = alphaBetaMinimax(player.opposite(), copyOfBoard, d - 1, alpha, beta);
+            
+            
+            if (isMax) {
+                if (response >= alpha) {
+                    alpha = response;
+                    if (d == AI.depth) {
+                        bestMove = m;
+                    }
+                }
+                if (alpha >= beta) {
+                    return alpha;
+                }
+            } else {
+                if (response <= beta) {
+                    beta = response;
+                    if (d == AI.depth) {
+                        bestMove = m;
+                    }
+                }
+                if (beta <= alpha) {
+                    return beta;
+                }
+            }
+        }
+        
+        if (isMax) {
+            return alpha;
+        } else {
+            return beta;
+        }
+    }
+    
+    
+    /** Guess best move for player p. 
+     *  @param player player
+     *  @param b current board
+     *  @param cutoff cutoff value
+     *  @return a best board static value. */
+    private double guessBestMove(Side player, Board b,
+        ArrayList<Integer> moves, double alpha, double beta, boolean isMaximizer) {
+        Board copyOfBoard = new MutableBoard(b);
+
+        for (Integer m : moves) {
+            copyOfBoard.addSpot(player, m);
+            double response = staticEval(player, copyOfBoard);
+            copyOfBoard.undo();
+
+            if (isMaximizer) {
+                if (response >= alpha) {
+                    alpha = response;
+                    // bestMove = m;
+                }
+                if (alpha >= beta) {
+                    return alpha;
+                }
+            } else {
+                if (response <= beta) {
+                    beta = response;
+                }
+                if (beta <= alpha) {
+                    return beta;
+                }
+            }
+
+        }
+
+        if (isMaximizer) {
+            return alpha;
+        } else {
+            return beta;
+        }
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
     /** Return the minimum of CUTOFF and the minmax value of board B
      *  (which must be mutable) for player P to a search depth of D
      *  (where D == 0 denotes statically evaluating just the next move).
@@ -66,9 +181,16 @@ class AI extends Player {
         }
         if (moves == null) {
             if (isMaximizer) {
-                return Integer.MIN_VALUE;
+                return Double.MIN_VALUE;
             } else {
-                return Integer.MAX_VALUE;
+                return Double.MAX_VALUE;
+            }
+        }
+        if (d == AI.depth) {
+            bestMove = moves.get(0);
+            if (moves.size() == 1) {
+                //need to revise
+                return -1000;
             }
         }
         if (d == 0) {
@@ -77,9 +199,9 @@ class AI extends Player {
         Board copyOfBoard = new MutableBoard(b);
         double currentBestValue;
         if (isMaximizer) {
-            currentBestValue = Integer.MIN_VALUE;
+            currentBestValue = Double.MIN_VALUE;
         } else {
-            currentBestValue = Integer.MAX_VALUE;
+            currentBestValue = Double.MAX_VALUE;
         }
         for (Integer m : moves) {
             copyOfBoard.addSpot(player, m);
@@ -117,9 +239,9 @@ class AI extends Player {
         Board copyOfBoard = new MutableBoard(b);
         double currentBestValue;
         if (isMaximizer) {
-            currentBestValue = Integer.MIN_VALUE;
+            currentBestValue = Double.MIN_VALUE;
         } else {
-            currentBestValue = Integer.MAX_VALUE;
+            currentBestValue = Double.MAX_VALUE;
         }
         for (Integer m : moves) {
             copyOfBoard.addSpot(player, m);
@@ -130,7 +252,6 @@ class AI extends Player {
             if (isMaximizer) {
                 if (newBestValue >= currentBestValue) {
                     currentBestValue = newBestValue;
-                    bestMove = m;
                     if (currentBestValue >= cutoff) {
                         break;
                     }
