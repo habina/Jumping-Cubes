@@ -23,7 +23,7 @@ class AI extends Player {
     private static final double MILLIS = 1000.0;
     
     /** Deepth for explore GameTree. */
-    private static final int depth = 3;
+    private static final int depth = 4;
     
     /** Best Move. */
     private int bestMove = -1;
@@ -40,16 +40,14 @@ class AI extends Player {
         // FIXME
         Side player = this.getSide();
         Board b = this.getBoard();
-        int cutoff = 10000;
+        double cutoff = Integer.MAX_VALUE;
         ArrayList<Integer> moves = validMoves(player, b);
         findBestMove(player, b, depth, cutoff, moves);
-//        int move = guessBestMove(player, b, cutoff);
         int r = b.row(bestMove);
         int c = b.col(bestMove);
         getGame().message("%s moves %d %d.\n", getSide().toCapitalizedString(), r, c);
 //        getGame().message("%d\n", getBoard().numPieces());
         getGame().makeMove(r, c);
-        bestMove = -2;
     }
 
     /** Return the minimum of CUTOFF and the minmax value of board B
@@ -59,30 +57,51 @@ class AI extends Player {
      *  a list of all highest-scoring moves for P; clear it if
      *  non-null and CUTOFF is exceeded. the contents of B are
      *  invariant over this call. */
-    private int findBestMove(Side player, Board b, int d, int cutoff, ArrayList<Integer> moves) {
+    private double findBestMove(Side player, Board b, int d, double cutoff, ArrayList<Integer> moves) {
+        boolean isMaximizer;
+        if (player == getSide()) {
+            isMaximizer = true;
+        } else {
+            isMaximizer = false;
+        }
         if (moves == null) {
-            return staticEval(player, b);
+            if (isMaximizer) {
+                return Integer.MIN_VALUE;
+            } else {
+                return Integer.MAX_VALUE;
+            }
         }
         if (d == 0) {
-            return guessBestMove(player, b, cutoff, moves);
+            return guessBestMove(player, b, cutoff, moves, isMaximizer);
         }
         Board copyOfBoard = new MutableBoard(b);
-        int currentBestValue = cutoff * -1;
+        double currentBestValue;
+        if (isMaximizer) {
+            currentBestValue = Integer.MIN_VALUE;
+        } else {
+            currentBestValue = Integer.MAX_VALUE;
+        }
         for (Integer m : moves) {
             copyOfBoard.addSpot(player, m);
-            int negaBestValue = currentBestValue * -1;
-            ArrayList<Integer> nextMoves = validMoves(player, copyOfBoard);
-            int newMoveValue = findBestMove(player.opposite(), copyOfBoard, d - 1, negaBestValue, nextMoves);
+            ArrayList<Integer> nextMoves = validMoves(player.opposite(), copyOfBoard);
+            double newMoveValue = findBestMove(player.opposite(), copyOfBoard, d - 1, currentBestValue, nextMoves);
             copyOfBoard.undo();
-            int negaNewValue = newMoveValue * -1;
-            if (negaNewValue >= currentBestValue) {
-                currentBestValue = negaNewValue;
-                if (d == depth){
-                    bestMove = m;
+            if (isMaximizer) {
+                if (newMoveValue >= currentBestValue) {
+                    currentBestValue = newMoveValue;
+                    if (d == depth) {
+                        bestMove = m;
+                    }
+                    if (currentBestValue >= cutoff) {
+                        break;
+                    }
                 }
-                if (currentBestValue >= cutoff) {
-                    moves.clear();
-                    break;
+            } else {
+                if (newMoveValue <= currentBestValue) {
+                    currentBestValue = newMoveValue;
+                    if (currentBestValue <= cutoff) {
+                        break;
+                    }
                 }
             }
         }
@@ -94,37 +113,51 @@ class AI extends Player {
      *  @param b current board
      *  @param cutoff cutoff value
      *  @return a best board static value. */
-    private int guessBestMove(Side player, Board b, int cutoff, ArrayList<Integer> moves) {
+    private double guessBestMove(Side player, Board b, double cutoff, ArrayList<Integer> moves, boolean isMaximizer) {
         Board copyOfBoard = new MutableBoard(b);
-        int currentBestValue = -10001;
+        double currentBestValue;
+        if (isMaximizer) {
+            currentBestValue = Integer.MIN_VALUE;
+        } else {
+            currentBestValue = Integer.MAX_VALUE;
+        }
         for (Integer m : moves) {
             copyOfBoard.addSpot(player, m);
-            int newBestValue = staticEval(player, copyOfBoard);
+            double newBestValue = staticEval(player, copyOfBoard);
             copyOfBoard.undo();
-            if (newBestValue > currentBestValue) {
-                currentBestValue = newBestValue;
-                bestMove = m;
-                if (currentBestValue >= cutoff) {
-                    break;
+            
+            
+            if (isMaximizer) {
+                if (newBestValue >= currentBestValue) {
+                    currentBestValue = newBestValue;
+                    bestMove = m;
+                    if (currentBestValue >= cutoff) {
+                        break;
+                    }
+                }
+            } else {
+                if (newBestValue <= currentBestValue) {
+                    currentBestValue = newBestValue;
+                    if (currentBestValue <= cutoff) {
+                        break;
+                    }
                 }
             }
+            
+            
         }
         return currentBestValue;
     }
 
     /** Returns heuristic value of board B for player P.
      *  Higher is better for P. */
-    private int staticEval(Side player, Board b) {
+    private double staticEval(Side player, Board b) {
         // REPLACE WITH SOLUTIONs
         int numForPlayer = b.numOfSide(player);
         Side opponent = player.opposite();
-        int numForOpponent = b.numOfSide(opponent);
-        if (b.getWinner() == player) {
-            return 10000;
-        } else if (b.getWinner() == opponent) {
-            return -10001;
-        }
-        return numForPlayer - numForOpponent;
+//        int numForOpponent = b.numOfSide(opponent);
+        double sum = 1.0 * b.numPieces();
+        return numForPlayer / sum;
     }
 
     /** Find current available move for player p. */

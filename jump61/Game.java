@@ -47,7 +47,6 @@ class Game extends Observable {
         _out = new PrintWriter(output, true);
         _err = new PrintWriter(errorOutput, true);
         setPlayer(RED, new HumanPlayer(this, RED));
-//        setPlayer(BLUE, new HumanPlayer(this, RED));
         setPlayer(BLUE, new AI(this, BLUE));
     }
 
@@ -78,7 +77,7 @@ class Game extends Observable {
                 try {
                     player.makeMove();
                     checkForWin();
-                } catch (Exception e) {
+                } catch (GameException e) {
                     reportError(e.getMessage());
                 }
             }
@@ -314,7 +313,7 @@ class Game extends Observable {
             }
         } catch (InputMismatchException e) {
             reportError("syntax error in '%s' command", command);
-        } catch (Exception e) {
+        } catch (GameException e) {
             reportError(e.getMessage());
         } finally {
             if (!(command.equals("\n") || command.equals("\r\n"))) {
@@ -329,11 +328,9 @@ class Game extends Observable {
      *  no command name matches, returns COMMAND in lower case. */
     private String canonicalizeCommand(String command) {
         command = command.toLowerCase();
-
         if (command.startsWith("#")) {
             return "#";
         }
-
         String fullName;
         fullName = null;
         for (String name : COMMAND_NAMES) {
