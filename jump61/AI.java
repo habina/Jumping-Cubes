@@ -47,7 +47,7 @@ class AI extends Player {
         int r = b.row(bestMove);
         int c = b.col(bestMove);
         getGame().message("%s moves %d %d.\n", getSide().toCapitalizedString(), r, c);
-        getGame().message("%d\n", getBoard().numPieces());
+//        getGame().message("%d\n", getBoard().numPieces());
         getGame().makeMove(r, c);
         bestMove = -2;
     }

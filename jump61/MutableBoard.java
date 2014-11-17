@@ -126,9 +126,9 @@ class MutableBoard extends Board {
             int neighborNum = neighbors(i);
             if (neighborNum < square.getSpots()) {
                 _balanced = false;
-                Side side = square.getSide();
-                _boardArray[i] = square(side, 1);
                 int[] neighborList = getNeighborIndex(i, neighborNum);
+                Side side = square.getSide();
+                _boardArray[i] = square(side, square.getSpots() - neighborNum);
                 for (int nIndex = 0; nIndex < neighborNum; nIndex += 1) {
                     int indexForBalance = neighborList[nIndex];
                     Square squareTemp = _boardArray[indexForBalance];
