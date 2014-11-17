@@ -1,16 +1,15 @@
 # Fill this in.
-staff-jump61
+java -ea jump61.Main
 None
 ===#1===
 start
 dump
 size 3
-verbose
+manual Blue
 start
 2 3
 1 1
 size 6
-manual Blue
 start
 1 2
 2 3
@@ -26,4 +25,5 @@ dump
 6 6
 3 3
 dump
+quit
 ===#2===

@@ -1,9 +1,11 @@
 # Fill this in.
-staff-jump61
-staff-jump61
+java -ea jump61.Main
+java -ea jump61.Main
 ===#1===
 auto red
 manual blue
+quit
 ===#2===
 manual red
 auto blue
+quit
