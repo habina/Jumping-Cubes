@@ -222,7 +222,7 @@ class MutableBoard extends Board {
 
     @Override
     public int hashCode() {
-        int result = 11;
+        int result = HASHMAGIC;
         int code = this._size;
         final int prime = 31;
         for (int i = 0; i < _boardArray.length; i += 1) {
@@ -232,6 +232,8 @@ class MutableBoard extends Board {
         return result;
     }
 
+    /** Hash magic number. */
+    private static final int HASHMAGIC = 11;
     /** History stack. */
     private Stack<Square[]> _boardArrayStack;
     /** True if board is balanced. */

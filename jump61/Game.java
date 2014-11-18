@@ -272,7 +272,7 @@ class Game extends Observable {
     private void eatNewline() {
         _inp.nextLine();
     }
-    
+
     /** Read and execute one command.  Leave the input at the start of
      *  a line, if there is more input. */
     private void readExecuteCommand() {

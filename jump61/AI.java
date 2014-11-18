@@ -17,13 +17,13 @@ class AI extends Player {
     private static final double MILLIS = 1000.0;
 
     /** Deepth for explore GameTree. */
-    private static final int depth = 4;
+    private static final int DEPTH = 4;
 
     /** Best Move. */
     private int bestMove = -1;
 
-    /** Start Time. */
-    private long startTime;
+    /** Best Value. */
+    private static final int BESTVALUE = 1000;
 
     /** A new player of GAME initially playing COLOR that chooses
      *  moves automatically.
@@ -38,11 +38,11 @@ class AI extends Player {
         Board b = this.getBoard();
         double cutoff = Double.MAX_VALUE;
         ArrayList<Integer> moves = validMoves(player, b);
-        startTime = System.currentTimeMillis();
-        findBestMove(player, b, depth, cutoff, moves);
+        findBestMove(player, b, DEPTH, cutoff, moves);
         int r = b.row(bestMove);
         int c = b.col(bestMove);
-        getGame().message("%s moves %d %d.\n", getSide().toCapitalizedString(), r, c);
+        getGame().message("%s moves %d %d.\n", getSide().toCapitalizedString(),
+            r, c);
         getGame().makeMove(r, c);
     }
 
@@ -52,8 +52,16 @@ class AI extends Player {
      *  If MOVES is not null and CUTOFF is not exceeded, set MOVES to
      *  a list of all highest-scoring moves for P; clear it if
      *  non-null and CUTOFF is exceeded. the contents of B are
-     *  invariant over this call. */
-    private double findBestMove(Side player, Board b, int d, double cutoff, ArrayList<Integer> moves) {
+     *  invariant over this call.
+     *  @param player a player
+     *  @param b current board
+     *  @param d depth
+     *  @param cutoff cutoff value
+     *  @param moves available moves
+     *  @return return a static evaluation
+     */
+    private double findBestMove(Side player, Board b, int d, double cutoff,
+        ArrayList<Integer> moves) {
         boolean isMaximizer;
         if (player == getSide()) {
             isMaximizer = true;
@@ -62,12 +70,12 @@ class AI extends Player {
         }
         if (moves == null) {
             if (isMaximizer) {
-                return Double.MIN_VALUE;
+                return BESTVALUE * (-1);
             } else {
-                return Double.MAX_VALUE;
+                return BESTVALUE;
             }
         }
-        if (d == AI.depth) {
+        if (d == AI.DEPTH) {
             bestMove = moves.get(0);
         }
         if (d == 0) {
@@ -82,13 +90,15 @@ class AI extends Player {
         }
         for (Integer m : moves) {
             copyOfBoard.addSpot(player, m);
-            ArrayList<Integer> nextMoves = validMoves(player.opposite(), copyOfBoard);
-            double newMoveValue = findBestMove(player.opposite(), copyOfBoard, d - 1, currentBestValue, nextMoves);
+            ArrayList<Integer> nextMoves = validMoves(player.opposite(),
+                copyOfBoard);
+            double newMoveValue = findBestMove(player.opposite(), copyOfBoard,
+                d - 1, currentBestValue, nextMoves);
             copyOfBoard.undo();
             if (isMaximizer) {
                 if (newMoveValue > currentBestValue) {
                     currentBestValue = newMoveValue;
-                    if (d == depth) {
+                    if (d == DEPTH) {
                         bestMove = m;
                     }
                     if (currentBestValue >= cutoff) {
@@ -107,10 +117,12 @@ class AI extends Player {
         return currentBestValue;
     }
 
-    /** Guess best move for player p. 
+    /** Guess best move for player p.
      *  @param player player
      *  @param b current board
      *  @param cutoff cutoff value
+     *  @param moves available moves
+     *  @param isMaximizer check if current level is maximizer
      *  @return a best board static value. */
     private double guessBestMove(Side player, Board b, double cutoff,
         ArrayList<Integer> moves, boolean isMaximizer) {
@@ -145,14 +157,22 @@ class AI extends Player {
     }
 
     /** Returns heuristic value of board B for player P.
-     *  Higher is better for P. */
+     *  Higher is better for P
+     *  @param player current player
+     *  @param b current board
+     *  @return return evaluation of the board
+     */
     private double staticEval(Side player, Board b) {
         int numForPlayer = b.numOfSide(player);
         double sum = 1.0 * b.numPieces();
         return numForPlayer / sum;
     }
 
-    /** Find current available move for player p. */
+    /** Find current available move for player p.
+     *  @param player current player
+     *  @param b current board
+     *  @return return all available moves
+     */
     private ArrayList<Integer> validMoves(Side player, Board b) {
         if (b.getWinner() != null) {
             return null;

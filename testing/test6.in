@@ -1,7 +1,8 @@
 staff-jump61
 java -ea jump61.Main
 ===#1===
-size 4
+size 3
+seed 137013
 auto red
 manual blue
 start
@@ -10,7 +11,7 @@ start
 %e
 quit
 ===#2===
-size 4
+size 3
 start
 %ir...
 %e
