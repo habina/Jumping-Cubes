@@ -10,21 +10,18 @@ class AI extends Player {
     /** Time allotted to all but final search depth (milliseconds). */
     private static final long TIME_LIMIT = 15000;
 
-    /** Number of calls to minmax between checks of elapsed time. */
-    private static final long TIME_CHECK_INTERVAL = 10000;
+    /** Deepth for explore GameTree, with board size less than 7. */
+    private int depth = 4;
 
-    /** Number of milliseconds in one second. */
-    private static final double MILLIS = 1000.0;
+    /** Deepth for explore GameTree, with board size less than 7. */
+    private int depth4 = 4;
 
-    /** Deepth for explore GameTree. */
-    private static final int DEPTH = 4;
+    /** Deepth for explore GameTree, with board size greater or equal to 8. */
+    private int depth3 = 3;
 
     /** Best Move. */
     private int bestMove = -1;
 
-    /** Best Value. */
-    private static final int BESTVALUE = 1000;
-    
     /** Time to start make move. */
     private long startTime;
 
@@ -42,12 +39,17 @@ class AI extends Player {
         double cutoff = Double.MAX_VALUE;
         ArrayList<Integer> moves = validMoves(player, b);
         startTime = System.currentTimeMillis();
-//        double response = findBestMove(player, b, DEPTH, cutoff, moves);
-        try{
-            findBestMove(player, b, DEPTH, cutoff, moves);
-        } catch(GameException e) {
+        try {
+            if (b.size() > 8) {
+                getGame().message("depth is 3");
+                depth = depth3;
+            } else {
+                depth = depth4;
+            }
+            findBestMove(player, b, depth, cutoff, moves);
+        } catch (GameException e) {
             int rand = getGame().randInt(moves.size());
-            getGame().message("AI Time out ");
+            getGame().message("AI Time Out");
             bestMove = moves.get(rand);
         }
         int r = b.row(bestMove);
@@ -85,12 +87,12 @@ class AI extends Player {
         }
         if (moves == null) {
             if (isMaximizer) {
-                return BESTVALUE * (-1);
+                return Double.MIN_VALUE;
             } else {
-                return BESTVALUE;
+                return Double.MAX_VALUE;
             }
         }
-        if (d == AI.DEPTH) {
+        if (d == this.depth) {
             bestMove = moves.get(0);
         }
         if (d == 0) {
@@ -113,7 +115,7 @@ class AI extends Player {
             if (isMaximizer) {
                 if (newMoveValue > currentBestValue) {
                     currentBestValue = newMoveValue;
-                    if (d == DEPTH) {
+                    if (d == this.depth) {
                         bestMove = m;
                     }
                     if (currentBestValue >= cutoff) {
