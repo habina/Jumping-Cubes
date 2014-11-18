@@ -1,8 +1,8 @@
-staff-jump61
 java -ea jump61.Main
+staff-jump61
 ===#1===
-size 3
-seed 137013
+size 10
+#seed 137013
 auto red
 manual blue
 start
@@ -11,7 +11,7 @@ start
 %e
 quit
 ===#2===
-size 3
+size 10
 start
 %ir...
 %e

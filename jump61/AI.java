@@ -24,6 +24,9 @@ class AI extends Player {
 
     /** Best Value. */
     private static final int BESTVALUE = 1000;
+    
+    /** Time to start make move. */
+    private long startTime;
 
     /** A new player of GAME initially playing COLOR that chooses
      *  moves automatically.
@@ -38,7 +41,15 @@ class AI extends Player {
         Board b = this.getBoard();
         double cutoff = Double.MAX_VALUE;
         ArrayList<Integer> moves = validMoves(player, b);
-        findBestMove(player, b, DEPTH, cutoff, moves);
+        startTime = System.currentTimeMillis();
+//        double response = findBestMove(player, b, DEPTH, cutoff, moves);
+        try{
+            findBestMove(player, b, DEPTH, cutoff, moves);
+        } catch(GameException e) {
+            int rand = getGame().randInt(moves.size());
+            getGame().message("AI Time out ");
+            bestMove = moves.get(rand);
+        }
         int r = b.row(bestMove);
         int c = b.col(bestMove);
         getGame().message("%s moves %d %d.\n", getSide().toCapitalizedString(),
@@ -62,6 +73,10 @@ class AI extends Player {
      */
     private double findBestMove(Side player, Board b, int d, double cutoff,
         ArrayList<Integer> moves) {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - startTime > TIME_LIMIT) {
+            throw GameException.timeOutAI();
+        }
         boolean isMaximizer;
         if (player == getSide()) {
             isMaximizer = true;

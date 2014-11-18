@@ -22,5 +22,10 @@ class GameException extends RuntimeException {
     static GameException error(String format, Object... args) {
         return new GameException(String.format(format, args));
     }
+    
+    /** Returns an exception for AI timeout. */
+    static GameException timeOutAI() {
+        return new GameException();
+    }
 
 }
