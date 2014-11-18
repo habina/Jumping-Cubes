@@ -149,14 +149,14 @@ abstract class Board extends Observable {
     @Override
     public String toString() {
         String output = "===\n";
-        for (int i = 0; i < _boardArray.length; i += 1) {
-            if (i % _size == 0) {
+        for (int i = 0; i < this.size() * this.size(); i += 1) {
+            if (i % this.size() == 0) {
                 output += "    ";
             }
-            if ((i + 1) % _size == 0) {
-                output += _boardArray[i].toString() + "\n";
+            if ((i + 1) % this.size() == 0) {
+                output += this.get(i).toString() + "\n";
             } else {
-                output += _boardArray[i].toString() + " ";
+                output += this.get(i).toString() + " ";
             }
         }
         output += "===";
@@ -170,15 +170,15 @@ abstract class Board extends Observable {
         String output = "";
         int row = 1;
         String columnIndex = "";
-        for (int i = 0; i < _boardArray.length; i += 1) {
-            if (i % _size == 0) {
-                output += " " + row + "  " + _boardArray[i].toString() + " ";
+        for (int i = 0; i < this.size() * this.size(); i += 1) {
+            if (i % this.size() == 0) {
+                output += " " + row + "  " + this.get(i).toString() + " ";
                 columnIndex += row + "  ";
                 row += 1;
-            } else if ((i + 1) % _size == 0) {
-                output += _boardArray[i].toString() + "\n";
+            } else if ((i + 1) % this.size() == 0) {
+                output += this.get(i).toString() + "\n";
             } else {
-                output += _boardArray[i].toString() + " ";
+                output += this.get(i).toString() + " ";
             }
         }
         columnIndex = "     " + columnIndex.trim();
