@@ -156,18 +156,18 @@ class Game extends Observable {
     }
 
     /** Make the player of COLOR an AI for subsequent moves. */
-    private void setAuto(Side color) {
+    void setAuto(Side color) {
         setPlayer(color, new AI(this, color));
     }
 
     /** Make the player of COLOR take manual input from the user for
      *  subsequent moves. */
-    private void setManual(Side color) {
+    void setManual(Side color) {
         setPlayer(color, new HumanPlayer(this, color));
     }
 
     /** Return the Player playing COLOR. */
-    private Player getPlayer(Side color) {
+    Player getPlayer(Side color) {
         return _players[color.ordinal()];
     }
 

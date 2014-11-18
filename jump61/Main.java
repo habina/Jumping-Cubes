@@ -43,8 +43,6 @@ public class Main {
                     new PipedReader(commandWriter, COMMAND_BUFFER_SIZE);
                 game = new Game(commandReader, trash, trash, trash);
                 Display display = new Display("Jump61", game, commandWriter);
-//                System.err.println("No graphical interface implemented");
-//                System.exit(1);
             } catch (IOException excp) {
                 game = null;
                 System.err.println("Internal error");

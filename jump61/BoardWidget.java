@@ -26,6 +26,8 @@ class BoardWidget extends Pad {
     private static final int SEPARATOR_SIZE = 3;
     /** Width of square plus one separator. */
     private static final int SQUARE_SEP = SQUARE_SIZE + SEPARATOR_SIZE;
+    /** Unit distance for spots. */
+    private static final int SPOTS_UNIT = 12;
 
     /** Colors of various parts of the displayed board. */
     private static final Color
@@ -62,12 +64,10 @@ class BoardWidget extends Pad {
         if (side0 != _side) {
             setPreferredSize(_side, _side);
         }
-        
     }
 
     @Override
     public synchronized void paintComponent(Graphics2D g) {
-        // FIXME
         g.setColor(NEUTRAL);
         g.fillRect(0, 0, _side, _side);
         g.setColor(SEPARATOR_COLOR);
@@ -75,40 +75,25 @@ class BoardWidget extends Pad {
             g.fillRect(0, k, _side, SEPARATOR_SIZE);
             g.fillRect(k, 0, SEPARATOR_SIZE, _side);
         }
-
         for (int i = 0; i < _board.size(); i += 1) {
             for (int j = 0; j < _board.size(); j += 1) {
                 displaySpots(g, i, j);
             }
         }
-        
-
-        
     }
 
     /** Color and display the spots on the square at row R and column C
      *  on G.  (Used by paintComponent). */
     private void displaySpots(Graphics2D g, int r, int c) {
-        // FIXME
         int x = toCoord(r);
         int y = toCoord(c);
-//        System.out.println(x + " " + y);
-//        System.out.println(r + " " + c);
-
-//        spot(g, x + SPOT_MARGIN, y + SPOT_MARGIN);
         int n = sqNum(r, c);
         if (_board.exists(n)) {
-//            System.out.println(n);
             int spotsNum = _board.get(n).getSpots();
             Side side = _board.get(n).getSide();
             if (side == WHITE) {
-                // g.setColor(NEUTRAL);
-                // g.fillRect(SEPARATOR_SIZE, SEPARATOR_SIZE, SQUARE_SIZE,
-                // SQUARE_SIZE);
                 drawSpots(g, spotsNum, x, y, NEUTRAL);
             } else if (side == RED) {
-                System.out.print("RED" + spotsNum + "\n");
-//                spot(g, x + SPOT_MARGIN, y + SPOT_MARGIN);
                 drawSpots(g, spotsNum, x, y, RED_TINT);
             } else if (side == BLUE) {
                 drawSpots(g, spotsNum, x, y, BLUE_TINT);
@@ -122,39 +107,51 @@ class BoardWidget extends Pad {
         return c + r * _board.size();
     }
 
-    /** Return the pixel distance corresponding to A rows or columns. */
+    /** Return the pixel distance corresponding to A rows or columns.
+     *  @param a rows or columns number
+     */
     static int toCoord(int a) {
         return SEPARATOR_SIZE + a * SQUARE_SEP;
     }
-    
-    /** Return the index corresponding the pixel distance. */
+
+    /** Return the index corresponding the pixel distance.
+     *  @param a pixel distance
+     */
     static int toIndex(int a) {
         return (a - SEPARATOR_SIZE) / SQUARE_SEP;
     }
-    
-    /** Draw n spots at the square (X, Y) on G. */
+
+    /** Draw n spots at the square (X, Y) on G.
+     *  @param g graph
+     *  @param n index
+     *  @param x index
+     *  @param y index
+     *  @param c color
+     */
     private void drawSpots(Graphics2D g, int n, int x, int y, Color c) {
         g.setColor(c);
         g.fillRect(x, y, SQUARE_SIZE, SQUARE_SIZE);
-        switch(n) {
-            case 1:
-                spot(g, x + 24, y + 24);
-                break;
-            case 2:
-                spot(g, x + 12, y + 24);
-                spot(g, x + 12 * 3, y + 24);
-                break;
-            case 3:
-                spot(g, x + 12, y + 12);
-                spot(g, x + 12 * 2, y + 12 * 2);
-                spot(g, x + 12 * 3, y + 12 * 3);
-                break;
-            case 4:
-                spot(g, x + 12, y + 12);
-                spot(g, x + 12, y + 12 * 3);
-                spot(g, x + 12 * 3, y + 12);
-                spot(g, x + 12 * 3, y + 12 * 3);
-                break;
+        switch (n) {
+        case 1:
+            spot(g, x + SPOTS_UNIT * 2, y + SPOTS_UNIT * 2);
+            break;
+        case 2:
+            spot(g, x + SPOTS_UNIT, y + SPOTS_UNIT * 2);
+            spot(g, x + SPOTS_UNIT * 3, y +  SPOTS_UNIT * 2);
+            break;
+        case 3:
+            spot(g, x + SPOTS_UNIT, y + SPOTS_UNIT);
+            spot(g, x + SPOTS_UNIT * 2, y + SPOTS_UNIT * 2);
+            spot(g, x + SPOTS_UNIT * 3, y + SPOTS_UNIT * 3);
+            break;
+        case 4:
+            spot(g, x + SPOTS_UNIT, y + SPOTS_UNIT);
+            spot(g, x + SPOTS_UNIT, y + SPOTS_UNIT * 3);
+            spot(g, x + SPOTS_UNIT * 3, y + SPOTS_UNIT);
+            spot(g, x + SPOTS_UNIT * 3, y + SPOTS_UNIT * 3);
+            break;
+        default:
+            break;
         }
     }
 
@@ -170,10 +167,11 @@ class BoardWidget extends Pad {
             y = event.getY() - SEPARATOR_SIZE;
         int r = toIndex(x) + 1;
         int c = toIndex(y) + 1;
-//        System.out.println(x + " " + y);
-//        System.out.println(r + " " + c);
         if (_board.exists(r, c)) {
             _game.makeMove(r, c);
+            Side pColor = _board.whoseMove();
+            Player player = _game.getPlayer(pColor);
+            player.makeMove();
             _commandOut.printf("%d %d%n", r, c);
         }
     }

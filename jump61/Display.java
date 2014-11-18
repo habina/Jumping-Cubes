@@ -30,12 +30,9 @@ class Display extends TopLevel implements Observer {
         _commandOut = new PrintWriter(commandWriter);
         _boardWidget = new BoardWidget(game, _commandOut);
         add(_boardWidget, new LayoutSpec("y", 1, "width", 2));
-        
         addMenuButton("Game->New Game", "newGame");
         addMenuButton("Game->Auto", "auto");
         addMenuButton("Game->Quit", "quit");
-        // OTHER THINGS?
-
         _board.addObserver(this);
         _game.addObserver(this);
         display(true);
@@ -48,7 +45,7 @@ class Display extends TopLevel implements Observer {
 
     /** Response to "Auto" button click. */
     void auto(String dummy) {
-        System.exit(0);
+        _game.clear();
     }
 
     /** Response to "Quit" button click. */
@@ -58,7 +55,6 @@ class Display extends TopLevel implements Observer {
 
     @Override
     public void update(Observable obs, Object obj) {
-        // FIXME
         _boardWidget.update();
         frame.pack();
         _boardWidget.repaint();
