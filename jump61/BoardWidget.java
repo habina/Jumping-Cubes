@@ -62,17 +62,100 @@ class BoardWidget extends Pad {
         if (side0 != _side) {
             setPreferredSize(_side, _side);
         }
+        
     }
 
     @Override
     public synchronized void paintComponent(Graphics2D g) {
         // FIXME
+        g.setColor(NEUTRAL);
+        g.fillRect(0, 0, _side, _side);
+        g.setColor(SEPARATOR_COLOR);
+        for (int k = 0; k < _side; k += SQUARE_SEP) {
+            g.fillRect(0, k, _side, SEPARATOR_SIZE);
+            g.fillRect(k, 0, SEPARATOR_SIZE, _side);
+        }
+
+        for (int i = 0; i < _board.size(); i += 1) {
+            for (int j = 0; j < _board.size(); j += 1) {
+                displaySpots(g, i, j);
+            }
+        }
+        
+
+        
     }
 
     /** Color and display the spots on the square at row R and column C
      *  on G.  (Used by paintComponent). */
     private void displaySpots(Graphics2D g, int r, int c) {
         // FIXME
+        int x = toCoord(r);
+        int y = toCoord(c);
+//        System.out.println(x + " " + y);
+//        System.out.println(r + " " + c);
+
+//        spot(g, x + SPOT_MARGIN, y + SPOT_MARGIN);
+        int n = sqNum(r, c);
+        if (_board.exists(n)) {
+//            System.out.println(n);
+            int spotsNum = _board.get(n).getSpots();
+            Side side = _board.get(n).getSide();
+            if (side == WHITE) {
+                // g.setColor(NEUTRAL);
+                // g.fillRect(SEPARATOR_SIZE, SEPARATOR_SIZE, SQUARE_SIZE,
+                // SQUARE_SIZE);
+                drawSpots(g, spotsNum, x, y, NEUTRAL);
+            } else if (side == RED) {
+                System.out.print("RED" + spotsNum + "\n");
+//                spot(g, x + SPOT_MARGIN, y + SPOT_MARGIN);
+                drawSpots(g, spotsNum, x, y, RED_TINT);
+            } else if (side == BLUE) {
+                drawSpots(g, spotsNum, x, y, BLUE_TINT);
+            }
+        }
+
+    }
+
+    /** Return the square number of row R, column C. */
+    int sqNum(int r, int c) {
+        return c + r * _board.size();
+    }
+
+    /** Return the pixel distance corresponding to A rows or columns. */
+    static int toCoord(int a) {
+        return SEPARATOR_SIZE + a * SQUARE_SEP;
+    }
+    
+    /** Return the index corresponding the pixel distance. */
+    static int toIndex(int a) {
+        return (a - SEPARATOR_SIZE) / SQUARE_SEP;
+    }
+    
+    /** Draw n spots at the square (X, Y) on G. */
+    private void drawSpots(Graphics2D g, int n, int x, int y, Color c) {
+        g.setColor(c);
+        g.fillRect(x, y, SQUARE_SIZE, SQUARE_SIZE);
+        switch(n) {
+            case 1:
+                spot(g, x + 24, y + 24);
+                break;
+            case 2:
+                spot(g, x + 12, y + 24);
+                spot(g, x + 12 * 3, y + 24);
+                break;
+            case 3:
+                spot(g, x + 12, y + 12);
+                spot(g, x + 12 * 2, y + 12 * 2);
+                spot(g, x + 12 * 3, y + 12 * 3);
+                break;
+            case 4:
+                spot(g, x + 12, y + 12);
+                spot(g, x + 12, y + 12 * 3);
+                spot(g, x + 12 * 3, y + 12);
+                spot(g, x + 12 * 3, y + 12 * 3);
+                break;
+        }
     }
 
     /** Draw one spot centered at position (X, Y) on G. */
@@ -83,16 +166,16 @@ class BoardWidget extends Pad {
 
     /** Respond to the mouse click depicted by EVENT. */
     public void doClick(MouseEvent event) {
-        // x and y coordinates relative to the upper-left corner of the
-        // upper-left square (increasing y is down).
         int x = event.getX() - SEPARATOR_SIZE,
             y = event.getY() - SEPARATOR_SIZE;
-        // REPLACE THE FOLLOWING WITH COMPUTATION OF r AND c FROM x and y,
-        // AND SEND THE APPROPRIATE COMMAND TO OUR GAME, IF THE EVENT
-        // OCCURS AT A VALID POSITION.  OTHERWISE, DOES NOTHING.
-        int r = 1;
-        int c = 1;
-        _commandOut.printf("%d %d%n", r, c);
+        int r = toIndex(x) + 1;
+        int c = toIndex(y) + 1;
+//        System.out.println(x + " " + y);
+//        System.out.println(r + " " + c);
+        if (_board.exists(r, c)) {
+            _game.makeMove(r, c);
+            _commandOut.printf("%d %d%n", r, c);
+        }
     }
 
     /** The Game I am playing. */
