@@ -132,9 +132,6 @@ class BoardWidget extends Pad {
         g.setColor(c);
         g.fillRect(x, y, SQUARE_SIZE, SQUARE_SIZE);
         switch (n) {
-        case 1:
-            spot(g, x + SPOTS_UNIT * 2, y + SPOTS_UNIT * 2);
-            break;
         case 2:
             spot(g, x + SPOTS_UNIT, y + SPOTS_UNIT * 2);
             spot(g, x + SPOTS_UNIT * 3, y +  SPOTS_UNIT * 2);
@@ -150,7 +147,15 @@ class BoardWidget extends Pad {
             spot(g, x + SPOTS_UNIT * 3, y + SPOTS_UNIT);
             spot(g, x + SPOTS_UNIT * 3, y + SPOTS_UNIT * 3);
             break;
+        case 5:
+            spot(g, x + SPOTS_UNIT, y + SPOTS_UNIT);
+            spot(g, x + SPOTS_UNIT, y + SPOTS_UNIT * 3);
+            spot(g, x + SPOTS_UNIT * 2, y + SPOTS_UNIT * 2);
+            spot(g, x + SPOTS_UNIT * 3, y + SPOTS_UNIT);
+            spot(g, x + SPOTS_UNIT * 3, y + SPOTS_UNIT * 3);
+            break;
         default:
+            spot(g, x + SPOTS_UNIT * 2, y + SPOTS_UNIT * 2);
             break;
         }
     }
@@ -167,13 +172,8 @@ class BoardWidget extends Pad {
             y = event.getY() - SEPARATOR_SIZE;
         int r = toIndex(x) + 1;
         int c = toIndex(y) + 1;
-        if (_board.exists(r, c)) {
-            _game.makeMove(r, c);
-            Side pColor = _board.whoseMove();
-            Player player = _game.getPlayer(pColor);
-            player.makeMove();
-            _commandOut.printf("%d %d%n", r, c);
-        }
+        _commandOut.println("start");
+        _commandOut.printf("%d %d%n", r, c);
     }
 
     /** The Game I am playing. */

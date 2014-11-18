@@ -31,21 +31,77 @@ class Display extends TopLevel implements Observer {
         _boardWidget = new BoardWidget(game, _commandOut);
         add(_boardWidget, new LayoutSpec("y", 1, "width", 2));
         addMenuButton("Game->New Game", "newGame");
-        addMenuButton("Game->Auto", "auto");
+        addMenuButton("Game->Auto Game", "auto");
         addMenuButton("Game->Quit", "quit");
+        addMenuButton("Size->3 * 3", "three");
+        addMenuButton("Size->4 * 4", "four");
+        addMenuButton("Size->5 * 5", "five");
+        addMenuButton("Size->6 * 6", "six");
+        addMenuButton("Size->7 * 7", "seven");
+        addMenuButton("Color->Red", "red");
+        addMenuButton("Color->Blue", "blue");
+        addMenuButton("Color->1 V 1", "pkMode");
         _board.addObserver(this);
         _game.addObserver(this);
         display(true);
     }
 
+    /** Response to "pkMode" button click. */
+    void pkMode(String dummy) {
+        _commandOut.println("manual red");
+        _commandOut.println("manual blue");
+        newGame(dummy);
+    }
+
+    /** Response to "red" button click. */
+    void red(String dummy) {
+        _commandOut.println("manual red");
+        _commandOut.println("auto blue");
+        newGame(dummy);
+    }
+
+    /** Response to "blue" button click. */
+    void blue(String dummy) {
+        _commandOut.println("auto red");
+        _commandOut.println("manual blue");
+        newGame(dummy);
+    }
+
+    /** Response to "three" button click. */
+    void three(String dummy) {
+        _commandOut.println("size 3");
+    }
+
+    /** Response to "four" button click. */
+    void four(String dummy) {
+        _commandOut.println("size 4");
+    }
+
+    /** Response to "five" button click. */
+    void five(String dummy) {
+        _commandOut.println("size 5");
+    }
+
+    /** Response to "six" button click. */
+    void six(String dummy) {
+        _commandOut.println("size 6");
+    }
+
+    /** Response to "ten" button click. */
+    void seven(String dummy) {
+        _commandOut.println("size 7");
+    }
+
     /** Response to "Auto" button click. */
     void newGame(String dummy) {
-        _game.clear();
+        _commandOut.println("new");
     }
 
     /** Response to "Auto" button click. */
     void auto(String dummy) {
-        _game.clear();
+        _commandOut.println("auto red");
+        _commandOut.println("auto blue");
+        _commandOut.println("start");
     }
 
     /** Response to "Quit" button click. */

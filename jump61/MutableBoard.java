@@ -101,6 +101,7 @@ class MutableBoard extends Board {
     /** Make the board balance. */
     private void balanceBoard() {
         if (_balanced || getWinner() != null) {
+            announce();
             return;
         }
         _balanced = true;

@@ -147,6 +147,7 @@ class Game extends Observable {
         if (_board.getWinner() != null) {
             _playing = false;
             announceWinner();
+            announce();
         }
     }
 
@@ -156,18 +157,18 @@ class Game extends Observable {
     }
 
     /** Make the player of COLOR an AI for subsequent moves. */
-    void setAuto(Side color) {
+    private void setAuto(Side color) {
         setPlayer(color, new AI(this, color));
     }
 
     /** Make the player of COLOR take manual input from the user for
      *  subsequent moves. */
-    void setManual(Side color) {
+    private void setManual(Side color) {
         setPlayer(color, new HumanPlayer(this, color));
     }
 
     /** Return the Player playing COLOR. */
-    Player getPlayer(Side color) {
+    private Player getPlayer(Side color) {
         return _players[color.ordinal()];
     }
 
@@ -248,6 +249,7 @@ class Game extends Observable {
      *  immediately print a win message and end the game. */
     private void restartGame() {
         _playing = true;
+        System.out.println("start game");
         checkForWin();
         announce();
     }
